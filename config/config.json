@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "clarington-staff-directory-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/claringtonStaffDirectory/ClaringtonStaffDirectoryWebPart.js",
+          "manifest": "./src/webparts/claringtonStaffDirectory/ClaringtonStaffDirectoryWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "ClaringtonStaffDirectoryWebPartStrings": "lib/webparts/claringtonStaffDirectory/loc/{locale}.js"
+  }
+}
