@@ -4,11 +4,14 @@ import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/Detai
 import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
+import { IconButton } from '@fluentui/react/lib/Button';
+
 
 export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, any> {
 
   constructor(props) {
     super(props);
+
     this.state = {
       users: this.props.users,
       persona: [],
@@ -54,6 +57,13 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
           sortAscendingAriaLabel: 'Sorted A to Z',
           sortDescendingAriaLabel: 'Sorted Z to A',
           onColumnClick: this._onColumnClick,
+          onRender: (item: any) => (
+            <div>
+              {/* <Icon aria-label="Mail" iconName="MailIcon" /> */}
+              <IconButton href={`mailto:${item.mail}`} iconProps={{ iconName: 'Mail' }} title={item.mail} ariaLabel="Mail" />
+              <span>{item.mail}</span>
+            </div>
+          )
         },
         {
           key: 'column5',
