@@ -122,7 +122,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     }
   }
 
-  private _setUserState(usersOutput): void {
+  private _setUserState(usersOutput, callback?: Function): void {
     this.setState({
       users: usersOutput,
       persona: [...usersOutput.map(user => {
@@ -134,18 +134,21 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
           ...user
         };
       })]
-    });
+    }, callback && callback());
   }
 
   //#region Grid Methods
   private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
+    debugger;
     const { columns, users } = this.state;
     const newColumns: IColumn[] = columns.slice();
     const currColumn: IColumn = newColumns.filter(currCol => column.key === currCol.key)[0];
     newColumns.forEach((newCol: IColumn) => {
+      debugger;
       if (newCol === currColumn) {
         currColumn.isSortedDescending = !currColumn.isSortedDescending;
         currColumn.isSorted = true;
+        debugger;
         this.setState({
           announcedMessage: `${currColumn.name} is sorted ${currColumn.isSortedDescending ? 'descending' : 'ascending'}`,
         });
@@ -155,9 +158,11 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
       }
     });
     const newUsers = this._copyAndSort(users, currColumn.fieldName!, currColumn.isSortedDescending);
-    this.setState({
-      columns: newColumns,
-      users: newUsers,
+    debugger;
+    this._setUserState(newUsers, () => {
+      this.setState({
+        columns: newColumns
+      });
     });
   }
 
