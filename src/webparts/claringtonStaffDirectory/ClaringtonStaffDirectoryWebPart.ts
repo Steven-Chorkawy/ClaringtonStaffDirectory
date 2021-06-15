@@ -10,9 +10,13 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'ClaringtonStaffDirectoryWebPartStrings';
 import ClaringtonStaffDirectory from './components/ClaringtonStaffDirectory';
 import { IClaringtonStaffDirectoryProps } from './components/IClaringtonStaffDirectoryProps';
+import { ClientMode } from './components/ClientMode';
+import { IUser } from './interface/IUser';
 
 export interface IClaringtonStaffDirectoryWebPartProps {
   description: string;
+  clientMode: ClientMode;
+  users: IUser[];
 }
 
 export default class ClaringtonStaffDirectoryWebPart extends BaseClientSideWebPart<IClaringtonStaffDirectoryWebPartProps> {
@@ -21,7 +25,10 @@ export default class ClaringtonStaffDirectoryWebPart extends BaseClientSideWebPa
     const element: React.ReactElement<IClaringtonStaffDirectoryProps> = React.createElement(
       ClaringtonStaffDirectory,
       {
-        description: this.properties.description
+        clientMode: this.properties.clientMode,
+        description: this.properties.description,
+        users: [],
+        context: this.context
       }
     );
 
