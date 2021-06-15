@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { IClaringtonStaffDirectoryProps } from './IClaringtonStaffDirectoryProps';
-import { escape } from '@microsoft/sp-lodash-subset';
 import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList.types';
-import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from '@fluentui/react/lib/Persona';
+import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
+import { Shimmer } from 'office-ui-fabric-react';
 
 export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, any> {
 
@@ -171,13 +171,33 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
   public render(): React.ReactElement<IClaringtonStaffDirectoryProps> {
     return (
       <div>
-        <DetailsList
-          items={this.state.persona}
-          columns={this.state.columns}
-          selectionMode={SelectionMode.none}
-          // selection={this._selection}
-          onShouldVirtualize={() => false}
-        />
+        {
+          (this.state.persona && this.state.persona.length > 0) ?
+            <DetailsList
+              items={this.state.persona}
+              columns={this.state.columns}
+              selectionMode={SelectionMode.none}
+              // selection={this._selection}
+              onShouldVirtualize={() => false}
+            /> :
+            <div>
+              <div style={{ marginBottom: '15px' }}>
+                <Shimmer style={{ marginBottom: '5px' }} />
+                <Shimmer width="75%" style={{ marginBottom: '5px' }} />
+                <Shimmer width="50%" style={{ marginBottom: '5px' }} />
+              </div>
+              <div style={{ marginBottom: '15px' }}>
+                <Shimmer style={{ marginBottom: '5px' }} />
+                <Shimmer width="75%" style={{ marginBottom: '5px' }} />
+                <Shimmer width="50%" style={{ marginBottom: '5px' }} />
+              </div>
+              <div style={{ marginBottom: '15px' }}>
+                <Shimmer style={{ marginBottom: '5px' }} />
+                <Shimmer width="75%" style={{ marginBottom: '5px' }} />
+                <Shimmer width="50%" style={{ marginBottom: '5px' }} />
+              </div>
+            </div>
+        }
       </div>
     );
   }
