@@ -106,21 +106,17 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
         this._queryAllUsers(queryNextLinkResult["@odata.nextLink"], usersOutput);
       }
       else {
-        debugger;
         this._setUserState(usersOutput);
       }
     }
     else {
       // Make initial query. 
       let queryUserResult = await this._queryUsers();
-
       usersOutput.push(...this._filterUsers(queryUserResult));
-      debugger;
       if (queryUserResult["@odata.nextLink"]) {
         this._queryAllUsers(queryUserResult["@odata.nextLink"], usersOutput);
       }
       else {
-        debugger;
         this._setUserState(usersOutput);
       }
     }
