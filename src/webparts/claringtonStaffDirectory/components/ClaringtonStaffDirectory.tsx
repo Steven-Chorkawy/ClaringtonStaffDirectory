@@ -80,7 +80,12 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
      * @param response Response from Graph API.
      */
   private _filterUsers(response): any {
-    let claringtonUsers = response.value.filter(value => { return value.mail != null && value.jobTitle != null; });
+    let claringtonUsers = response.value.filter(value => {
+      return value.mail != null
+        && value.jobTitle != null
+        && value.surname != null
+        && value.givenName != null;
+    });
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
     return claringtonUsers;
   }
@@ -128,7 +133,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
       persona: [...usersOutput.map(user => {
         return {
           imageUrl: "https://www.google.ca",
-          imageInitials: "ZZ",
+          imageInitials: `${user.givenName.charAt(0)}${user.surname.charAt(0)}`,
           text: user.displayName,
           secondaryText: user.jobTitle,
           ...user
