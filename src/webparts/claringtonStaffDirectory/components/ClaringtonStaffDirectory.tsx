@@ -5,7 +5,7 @@ import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react/lib/Perso
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton } from '@fluentui/react/lib/Button';
-
+import { SearchBox } from '@fluentui/react/lib/SearchBox';
 
 export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, any> {
 
@@ -15,6 +15,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     this.state = {
       users: this.props.users,
       persona: [],
+      allPersonas: [],
       columns: [
         {
           key: 'column1',
@@ -138,17 +139,20 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
   }
 
   private _setUserState(usersOutput, callback?: Function): void {
+    let persona = [...usersOutput.map(user => {
+      return {
+        imageUrl: "https://www.google.ca",
+        imageInitials: `${user.givenName.charAt(0)}${user.surname.charAt(0)}`,
+        text: user.displayName,
+        secondaryText: user.jobTitle,
+        ...user
+      };
+    })];
+
     this.setState({
       users: usersOutput,
-      persona: [...usersOutput.map(user => {
-        return {
-          imageUrl: "https://www.google.ca",
-          imageInitials: `${user.givenName.charAt(0)}${user.surname.charAt(0)}`,
-          text: user.displayName,
-          secondaryText: user.jobTitle,
-          ...user
-        };
-      })]
+      persona: persona,
+      allPersonas: persona
     }, callback && callback());
   }
 
@@ -183,18 +187,48 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
   }
   //#endregion
 
+  //#region Search Box Events
+  /**
+   * Take the users input from the search box and filter users.
+   * This method will update the state object to display the correct users.
+   * @param newValue User input from search box
+   */
+  private _applySearchFilter = (newValue: string) => {
+    if (newValue) {
+      newValue = newValue.toLowerCase();
+      // All users =  this.state.allPersonas;
+      // Visible users = this.state.persona;
+      let visibleUsers = this.state.allPersonas.filter(user => {
+        // start with display name but I should also use jobTitle and department
+        return user.displayName.toLowerCase().includes(newValue) || user.jobTitle.toLowerCase().includes(newValue) || (user.department && user.department.toLowerCase().includes(newValue));
+      });
+
+      this.setState({ persona: visibleUsers });
+    }
+    else {
+      this.setState({ persona: this.state.allPersonas });
+    }
+  }
+
+  private _onSearchChange = (event: any, newValue: string) => {
+    this._applySearchFilter(newValue);
+  }
+  //#endregion
+
   public render(): React.ReactElement<IClaringtonStaffDirectoryProps> {
     return (
       <div>
         {
           (this.state.persona && this.state.persona.length > 0) ?
-            <DetailsList
-              items={this.state.persona}
-              columns={this.state.columns}
-              selectionMode={SelectionMode.none}
-              // selection={this._selection}
-              onShouldVirtualize={() => false}
-            /> :
+            <div>
+              <SearchBox placeholder="Search" onChange={this._onSearchChange} />
+              <DetailsList
+                items={this.state.persona}
+                columns={this.state.columns}
+                selectionMode={SelectionMode.none}
+                onShouldVirtualize={() => false}
+              />
+            </div> :
             <div>
               <div style={{ marginBottom: '15px' }}>
                 <Shimmer style={{ marginBottom: '5px' }} />
