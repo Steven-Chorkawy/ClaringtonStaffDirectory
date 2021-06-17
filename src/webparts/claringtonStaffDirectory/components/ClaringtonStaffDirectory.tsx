@@ -7,6 +7,8 @@ import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton } from '@fluentui/react/lib/Button';
 import { SearchBox } from '@fluentui/react/lib/SearchBox';
 
+
+//TODO: Replace allPersona with users variable. 
 export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, any> {
 
   constructor(props) {
@@ -165,9 +167,6 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
       if (newCol === currColumn) {
         currColumn.isSortedDescending = !currColumn.isSortedDescending;
         currColumn.isSorted = true;
-        this.setState({
-          announcedMessage: `${currColumn.name} is sorted ${currColumn.isSortedDescending ? 'descending' : 'ascending'}`,
-        });
       } else {
         newCol.isSorted = false;
         newCol.isSortedDescending = true;
