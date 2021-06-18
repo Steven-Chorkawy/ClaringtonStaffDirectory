@@ -97,7 +97,8 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
       return value.mail != null
         && value.jobTitle != null
         && value.surname != null
-        && value.givenName != null;
+        && value.givenName != null
+        && value.department != null;
     });
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
     return claringtonUsers;
@@ -161,9 +162,10 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
 
   //#region Grid Methods
   private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
-    const { columns, users } = this.state;
+    const { columns, persona } = this.state;
     const newColumns: IColumn[] = columns.slice();
     const currColumn: IColumn = newColumns.filter(currCol => column.key === currCol.key)[0];
+
     newColumns.forEach((newCol: IColumn) => {
       if (newCol === currColumn) {
         currColumn.isSortedDescending = !currColumn.isSortedDescending;
@@ -173,11 +175,12 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
         newCol.isSortedDescending = true;
       }
     });
-    const newUsers = this._copyAndSort(users, currColumn.fieldName!, currColumn.isSortedDescending);
-    this._setUserState(newUsers, () => {
-      this.setState({
-        columns: newColumns
-      });
+
+    const newUsers = this._copyAndSort(persona, currColumn.fieldName!, currColumn.isSortedDescending);
+
+    this.setState({
+      persona: newUsers,
+      columns: newColumns
     });
   }
 
@@ -194,20 +197,28 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
    * @param newValue User input from search box
    */
   private _applySearchFilter = (newValue: string) => {
+    let visibleUsers = [];
     if (newValue) {
       newValue = newValue.toLowerCase();
       // All users =  this.state.allPersonas;
       // Visible users = this.state.persona;
-      let visibleUsers = this.state.allPersonas.filter(user => {
+      visibleUsers = this.state.allPersonas.filter(user => {
         // start with display name but I should also use jobTitle and department
         return user.displayName.toLowerCase().includes(newValue) || user.jobTitle.toLowerCase().includes(newValue) || (user.department && user.department.toLowerCase().includes(newValue));
       });
-
-      this.setState({ persona: visibleUsers });
     }
     else {
-      this.setState({ persona: this.state.allPersonas });
+      visibleUsers = this.state.allPersonas;
     }
+
+    // Apply any sorting. 
+    let sortedColumn = this.state.columns.find(col => { return col.isSorted; });
+  
+    if (sortedColumn) {
+      visibleUsers = this._copyAndSort(visibleUsers, sortedColumn.fieldName!, sortedColumn.isSortedDescending);
+    }
+
+    this.setState({ persona: visibleUsers });
   }
 
   private _onSearchChange = (event: any, newValue: string) => {
