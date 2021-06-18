@@ -136,7 +136,8 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
         && value.jobTitle != null
         && value.surname != null
         && value.givenName != null
-        && value.department != null;
+        && value.department != null
+        && value.accountEnabled === true;
     });
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
     return claringtonUsers;
@@ -144,7 +145,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
 
   private async _queryUsers(): Promise<any> {
     let client = await this.props.context.msGraphClientFactory.getClient();
-    return await client.api('users').top(200).select(['displayName', 'surname', 'givenName', 'mail', 'jobTitle', 'businessPhones', 'department', 'mobilePhone', 'userPrincipalName']).get();
+    return await client.api('users').top(200).select(['displayName', 'surname', 'givenName', 'mail', 'jobTitle', 'businessPhones', 'department', 'mobilePhone', 'userPrincipalName', 'accountEnabled']).get();
   }
 
   private async _queryNextLink(nextLink): Promise<any> {
