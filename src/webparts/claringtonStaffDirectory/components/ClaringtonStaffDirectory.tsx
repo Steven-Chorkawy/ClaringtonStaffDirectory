@@ -6,7 +6,45 @@ import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/component
 import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton } from '@fluentui/react/lib/Button';
 import { SearchBox } from '@fluentui/react/lib/SearchBox';
+import { MessageBar } from '@fluentui/react/lib/components/MessageBar/MessageBar';
+import { Link } from '@fluentui/react/lib/components/Link/Link';
 
+
+class StaffGrid extends React.Component<any> {
+  public render(): React.ReactElement<any> {
+    return <div>
+      <SearchBox placeholder="Search by Name, Job Title, or Department" onChange={this.props.onSearchChange} />
+      <DetailsList
+        items={this.props.items}
+        columns={this.props.columns}
+        selectionMode={SelectionMode.none}
+        onShouldVirtualize={() => false}
+      />
+    </div>;
+  }
+}
+
+class MyShimmer extends React.Component {
+  public render() {
+    return (<div>
+      <div style={{ marginBottom: '15px' }}>
+        <Shimmer style={{ marginBottom: '5px' }} />
+        <Shimmer width="75%" style={{ marginBottom: '5px' }} />
+        <Shimmer width="50%" style={{ marginBottom: '5px' }} />
+      </div>
+      <div style={{ marginBottom: '15px' }}>
+        <Shimmer style={{ marginBottom: '5px' }} />
+        <Shimmer width="75%" style={{ marginBottom: '5px' }} />
+        <Shimmer width="50%" style={{ marginBottom: '5px' }} />
+      </div>
+      <div style={{ marginBottom: '15px' }}>
+        <Shimmer style={{ marginBottom: '5px' }} />
+        <Shimmer width="75%" style={{ marginBottom: '5px' }} />
+        <Shimmer width="50%" style={{ marginBottom: '5px' }} />
+      </div>
+    </div>);
+  }
+}
 
 //TODO: Replace allPersona with users variable. 
 export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, any> {
@@ -16,7 +54,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
 
     this.state = {
       users: this.props.users,
-      persona: [],
+      persona: null,
       allPersonas: [],
       columns: [
         {
@@ -197,14 +235,17 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
    * @param newValue User input from search box
    */
   private _applySearchFilter = (newValue: string) => {
-    let visibleUsers = [];
+    debugger;
+    let visibleUsers = this.state.persona;
     if (newValue) {
       newValue = newValue.toLowerCase();
       // All users =  this.state.allPersonas;
       // Visible users = this.state.persona;
       visibleUsers = this.state.allPersonas.filter(user => {
         // start with display name but I should also use jobTitle and department
-        return user.displayName.toLowerCase().includes(newValue) || user.jobTitle.toLowerCase().includes(newValue) || (user.department && user.department.toLowerCase().includes(newValue));
+        return user.displayName.toLowerCase().includes(newValue)
+          || user.jobTitle.toLowerCase().includes(newValue)
+          || (user.department && user.department.toLowerCase().includes(newValue));
       });
     }
     else {
@@ -213,11 +254,12 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
 
     // Apply any sorting. 
     let sortedColumn = this.state.columns.find(col => { return col.isSorted; });
-  
+
     if (sortedColumn) {
       visibleUsers = this._copyAndSort(visibleUsers, sortedColumn.fieldName!, sortedColumn.isSortedDescending);
     }
 
+    debugger;
     this.setState({ persona: visibleUsers });
   }
 
@@ -230,33 +272,9 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     return (
       <div>
         {
-          (this.state.persona && this.state.persona.length > 0) ?
-            <div>
-              <SearchBox placeholder="Search" onChange={this._onSearchChange} />
-              <DetailsList
-                items={this.state.persona}
-                columns={this.state.columns}
-                selectionMode={SelectionMode.none}
-                onShouldVirtualize={() => false}
-              />
-            </div> :
-            <div>
-              <div style={{ marginBottom: '15px' }}>
-                <Shimmer style={{ marginBottom: '5px' }} />
-                <Shimmer width="75%" style={{ marginBottom: '5px' }} />
-                <Shimmer width="50%" style={{ marginBottom: '5px' }} />
-              </div>
-              <div style={{ marginBottom: '15px' }}>
-                <Shimmer style={{ marginBottom: '5px' }} />
-                <Shimmer width="75%" style={{ marginBottom: '5px' }} />
-                <Shimmer width="50%" style={{ marginBottom: '5px' }} />
-              </div>
-              <div style={{ marginBottom: '15px' }}>
-                <Shimmer style={{ marginBottom: '5px' }} />
-                <Shimmer width="75%" style={{ marginBottom: '5px' }} />
-                <Shimmer width="50%" style={{ marginBottom: '5px' }} />
-              </div>
-            </div>
+          this.state.persona === null ?
+            <MyShimmer /> :
+            <StaffGrid onSearchChange={this._onSearchChange} items={this.state.persona} columns={this.state.columns} />
         }
       </div>
     );
