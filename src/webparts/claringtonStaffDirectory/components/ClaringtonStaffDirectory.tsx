@@ -140,6 +140,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     }
   }
 
+  // TODO: See if I can get away with only calling this method once.
   private _setUserState(usersOutput, callback?: Function): void {
     let persona = [...usersOutput.map(user => {
       return {
