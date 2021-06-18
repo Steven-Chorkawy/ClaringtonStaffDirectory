@@ -3,7 +3,7 @@
   "solution": {
     "name": "Clarington Staff Directory Web Part",
     "id": "376d44c6-5e95-4c1c-9496-64cbb84b24d6",
-    "version": "1.0.0.0",
+    "version": "2.0.0.0",
     "includeClientSideAssets": true,
     "isDomainIsolated": false,
     "webApiPermissionRequests": [

@@ -5,8 +5,10 @@ import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react/lib/Perso
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton } from '@fluentui/react/lib/Button';
+import { SearchBox } from '@fluentui/react/lib/SearchBox';
 
 
+//TODO: Replace allPersona with users variable. 
 export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, any> {
 
   constructor(props) {
@@ -15,6 +17,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     this.state = {
       users: this.props.users,
       persona: [],
+      allPersonas: [],
       columns: [
         {
           key: 'column1',
@@ -94,7 +97,8 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
       return value.mail != null
         && value.jobTitle != null
         && value.surname != null
-        && value.givenName != null;
+        && value.givenName != null
+        && value.department != null;
     });
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
     return claringtonUsers;
@@ -137,43 +141,46 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     }
   }
 
+  // TODO: See if I can get away with only calling this method once.
   private _setUserState(usersOutput, callback?: Function): void {
+    let persona = [...usersOutput.map(user => {
+      return {
+        imageUrl: "https://www.google.ca",
+        imageInitials: `${user.givenName.charAt(0)}${user.surname.charAt(0)}`,
+        text: user.displayName,
+        secondaryText: user.jobTitle,
+        ...user
+      };
+    })];
+
     this.setState({
       users: usersOutput,
-      persona: [...usersOutput.map(user => {
-        return {
-          imageUrl: "https://www.google.ca",
-          imageInitials: `${user.givenName.charAt(0)}${user.surname.charAt(0)}`,
-          text: user.displayName,
-          secondaryText: user.jobTitle,
-          ...user
-        };
-      })]
+      persona: persona,
+      allPersonas: persona
     }, callback && callback());
   }
 
   //#region Grid Methods
   private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
-    const { columns, users } = this.state;
+    const { columns, persona } = this.state;
     const newColumns: IColumn[] = columns.slice();
     const currColumn: IColumn = newColumns.filter(currCol => column.key === currCol.key)[0];
+
     newColumns.forEach((newCol: IColumn) => {
       if (newCol === currColumn) {
         currColumn.isSortedDescending = !currColumn.isSortedDescending;
         currColumn.isSorted = true;
-        this.setState({
-          announcedMessage: `${currColumn.name} is sorted ${currColumn.isSortedDescending ? 'descending' : 'ascending'}`,
-        });
       } else {
         newCol.isSorted = false;
         newCol.isSortedDescending = true;
       }
     });
-    const newUsers = this._copyAndSort(users, currColumn.fieldName!, currColumn.isSortedDescending);
-    this._setUserState(newUsers, () => {
-      this.setState({
-        columns: newColumns
-      });
+
+    const newUsers = this._copyAndSort(persona, currColumn.fieldName!, currColumn.isSortedDescending);
+
+    this.setState({
+      persona: newUsers,
+      columns: newColumns
     });
   }
 
@@ -183,18 +190,56 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
   }
   //#endregion
 
+  //#region Search Box Events
+  /**
+   * Take the users input from the search box and filter users.
+   * This method will update the state object to display the correct users.
+   * @param newValue User input from search box
+   */
+  private _applySearchFilter = (newValue: string) => {
+    let visibleUsers = [];
+    if (newValue) {
+      newValue = newValue.toLowerCase();
+      // All users =  this.state.allPersonas;
+      // Visible users = this.state.persona;
+      visibleUsers = this.state.allPersonas.filter(user => {
+        // start with display name but I should also use jobTitle and department
+        return user.displayName.toLowerCase().includes(newValue) || user.jobTitle.toLowerCase().includes(newValue) || (user.department && user.department.toLowerCase().includes(newValue));
+      });
+    }
+    else {
+      visibleUsers = this.state.allPersonas;
+    }
+
+    // Apply any sorting. 
+    let sortedColumn = this.state.columns.find(col => { return col.isSorted; });
+  
+    if (sortedColumn) {
+      visibleUsers = this._copyAndSort(visibleUsers, sortedColumn.fieldName!, sortedColumn.isSortedDescending);
+    }
+
+    this.setState({ persona: visibleUsers });
+  }
+
+  private _onSearchChange = (event: any, newValue: string) => {
+    this._applySearchFilter(newValue);
+  }
+  //#endregion
+
   public render(): React.ReactElement<IClaringtonStaffDirectoryProps> {
     return (
       <div>
         {
           (this.state.persona && this.state.persona.length > 0) ?
-            <DetailsList
-              items={this.state.persona}
-              columns={this.state.columns}
-              selectionMode={SelectionMode.none}
-              // selection={this._selection}
-              onShouldVirtualize={() => false}
-            /> :
+            <div>
+              <SearchBox placeholder="Search" onChange={this._onSearchChange} />
+              <DetailsList
+                items={this.state.persona}
+                columns={this.state.columns}
+                selectionMode={SelectionMode.none}
+                onShouldVirtualize={() => false}
+              />
+            </div> :
             <div>
               <div style={{ marginBottom: '15px' }}>
                 <Shimmer style={{ marginBottom: '5px' }} />
