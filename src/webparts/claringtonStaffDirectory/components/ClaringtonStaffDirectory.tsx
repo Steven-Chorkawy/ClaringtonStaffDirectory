@@ -271,7 +271,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
 
   public render(): React.ReactElement<IClaringtonStaffDirectoryProps> {
     return (
-      <div>
+      <div style={{ maxWidth: '1300px', margin: 'auto' }}>
         {
           this.state.persona === null ?
             <MyShimmer /> :
