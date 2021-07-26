@@ -153,28 +153,33 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     return await client.api(nextLink).get();
   }
 
+  /**
+   * Step 1: Run _queryUsers() to get a list of users. 
+   * Step 2: If there are more users to be queried via '@odata.nextLink' run this method again. 
+   * Step 3: Repeat Step 2 until '@odata.nextLink' is not set. 
+   * Step 4: Run _setUserState() to render users on the page. 
+   * Step 5: ???
+   * @param nextLink 
+   * @param users 
+   */
   private async _queryAllUsers(nextLink?, users?): Promise<any> {
     let usersOutput = users ? users : [];
-
+  
     if (nextLink) {
       let queryNextLinkResult = await this._queryNextLink(nextLink);
       usersOutput.push(...this._filterUsers(queryNextLinkResult));
 
       if (queryNextLinkResult["@odata.nextLink"]) {
         this._queryAllUsers(queryNextLinkResult["@odata.nextLink"], usersOutput);
-      }
-      else {
         this._setUserState(usersOutput);
       }
     }
+    // Make initial query. 
     else {
-      // Make initial query. 
       let queryUserResult = await this._queryUsers();
       usersOutput.push(...this._filterUsers(queryUserResult));
       if (queryUserResult["@odata.nextLink"]) {
         this._queryAllUsers(queryUserResult["@odata.nextLink"], usersOutput);
-      }
-      else {
         this._setUserState(usersOutput);
       }
     }
@@ -193,9 +198,13 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
 
     this.setState({
       users: usersOutput,
-      persona: persona,
       allPersonas: persona
-    }, callback && callback());
+    }, () => {
+      if (callback) {
+        callback();
+      }
+      this._applySearchFilter(this.state.searchFilterString);
+    });
   }
 
   //#region Grid Methods
@@ -236,6 +245,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
    */
   private _applySearchFilter = (newValue: string) => {
     debugger;
+    this.setState({ searchFilterString: newValue });
     let visibleUsers = this.state.persona;
     if (newValue) {
       newValue = newValue.toLowerCase();

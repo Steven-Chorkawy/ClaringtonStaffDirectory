@@ -12,4 +12,5 @@ export interface IClaringtonStaffDirectoryState {
     persona: any;
     allPersonas: any;
     columns: any;
+    searchFilterString?: string;
 }
