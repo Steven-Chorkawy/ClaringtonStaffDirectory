@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { IClaringtonStaffDirectoryProps } from './IClaringtonStaffDirectoryProps';
 import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList.types';
 import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
@@ -8,6 +7,7 @@ import { IconButton } from '@fluentui/react/lib/Button';
 import { SearchBox } from '@fluentui/react/lib/SearchBox';
 import { MessageBar } from '@fluentui/react/lib/components/MessageBar/MessageBar';
 import { Link } from '@fluentui/react/lib/components/Link/Link';
+import { IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState } from './IClaringtonStaffDirectory';
 
 
 class StaffGrid extends React.Component<any> {
@@ -47,7 +47,7 @@ class MyShimmer extends React.Component {
 }
 
 //TODO: Replace allPersona with users variable. 
-export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, any> {
+export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState> {
 
   constructor(props) {
     super(props);
