@@ -9,7 +9,7 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
 import * as strings from 'ClaringtonStaffDirectoryWebPartStrings';
 import ClaringtonStaffDirectory from './components/ClaringtonStaffDirectory';
-import { IClaringtonStaffDirectoryProps } from './components/IClaringtonStaffDirectoryProps';
+import { IClaringtonStaffDirectoryProps } from './components/IClaringtonStaffDirectory';
 import { ClientMode } from './components/ClientMode';
 import { IUser } from './interface/IUser';
 
