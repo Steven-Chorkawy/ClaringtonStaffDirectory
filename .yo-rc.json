@@ -4,7 +4,7 @@
     "environment": "spo",
     "version": "1.12.1",
     "libraryName": "staff-directory",
-    "libraryId": "376d44c6-5e95-4c1c-9496-64cbb84b24d6",
+    "libraryId": "476d44c6-5e95-4c1c-9496-64cbb84b24d6",
     "packageManager": "npm",
     "isDomainIsolated": false,
     "componentType": "webpart"
