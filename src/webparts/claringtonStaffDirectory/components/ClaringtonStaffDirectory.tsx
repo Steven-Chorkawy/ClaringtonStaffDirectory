@@ -188,7 +188,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
   private _setUserState(usersOutput, callback?: Function): void {
     let persona = [...usersOutput.map(user => {
       return {
-        imageUrl: "https://www.google.ca",
+        imageUrl: `/_layouts/15/userphoto.aspx?size=L&username=${user.mail}`,
         imageInitials: `${user.givenName.charAt(0)}${user.surname.charAt(0)}`,
         text: user.displayName,
         secondaryText: user.jobTitle,
