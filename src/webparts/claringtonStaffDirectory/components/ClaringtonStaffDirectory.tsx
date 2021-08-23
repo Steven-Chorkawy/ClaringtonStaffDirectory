@@ -3,8 +3,8 @@ import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/Detai
 import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
-import { IconButton } from '@fluentui/react/lib/Button';
-import { SearchBox } from '@fluentui/react/lib/SearchBox';
+import { IconButton, SearchBox } from '@fluentui/react';
+
 
 import { IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState } from './IClaringtonStaffDirectory';
 
