@@ -5,8 +5,7 @@ import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/component
 import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton } from '@fluentui/react/lib/Button';
 import { SearchBox } from '@fluentui/react/lib/SearchBox';
-import { MessageBar } from '@fluentui/react/lib/components/MessageBar/MessageBar';
-import { Link } from '@fluentui/react/lib/components/Link/Link';
+
 import { IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState } from './IClaringtonStaffDirectory';
 
 
