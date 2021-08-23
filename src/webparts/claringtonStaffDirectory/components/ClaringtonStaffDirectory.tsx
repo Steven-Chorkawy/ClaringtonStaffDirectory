@@ -3,26 +3,11 @@ import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/Detai
 import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
-import { IconButton } from '@fluentui/react/lib/Button';
-import { SearchBox } from '@fluentui/react/lib/SearchBox';
-import { MessageBar } from '@fluentui/react/lib/components/MessageBar/MessageBar';
-import { Link } from '@fluentui/react/lib/components/Link/Link';
+import { IconButton, SearchBox } from '@fluentui/react';
+
+
 import { IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState } from './IClaringtonStaffDirectory';
 
-
-class StaffGrid extends React.Component<any> {
-  public render(): React.ReactElement<any> {
-    return <div>
-      <SearchBox placeholder="Search by Name, Job Title, or Department" onChange={this.props.onSearchChange} />
-      <DetailsList
-        items={this.props.items}
-        columns={this.props.columns}
-        selectionMode={SelectionMode.none}
-        onShouldVirtualize={() => false}
-      />
-    </div>;
-  }
-}
 
 class MyShimmer extends React.Component {
   public render() {
@@ -46,16 +31,10 @@ class MyShimmer extends React.Component {
   }
 }
 
-//TODO: Replace allPersona with users variable. 
-export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState> {
-
+class StaffGrid extends React.Component<any, any> {
   constructor(props) {
     super(props);
-
     this.state = {
-      users: this.props.users,
-      persona: null,
-      allPersonas: [],
       columns: [
         {
           key: 'column1',
@@ -120,10 +99,50 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
             <div>{item.businessPhones.map(f => { return <div title={f}>{f}</div>; })}</div>
           ),
         },
-      ]
+      ],
+      persona: null,
     };
 
     this._queryAllUsers();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.searchString !== this.props.searchString) {
+      this._applySearchFilter(this.props.searchString);
+    }
+  }
+
+  //#region Get Users
+  /**
+   * Step 1: Run _queryUsers() to get a list of users. 
+   * Step 2: If there are more users to be queried via '@odata.nextLink' run this method again. 
+   * Step 3: Repeat Step 2 until '@odata.nextLink' is not set. 
+   * Step 4: Run _setUserState() to render users on the page. 
+   * Step 5: ???
+   * @param nextLink 
+   * @param users 
+   */
+  private async _queryAllUsers(nextLink?, users?): Promise<any> {
+    let usersOutput = users ? users : [];
+
+    if (nextLink) {
+      let queryNextLinkResult = await this._queryNextLink(nextLink);
+      usersOutput.push(...this._filterUsers(queryNextLinkResult));
+
+      if (queryNextLinkResult["@odata.nextLink"]) {
+        this._queryAllUsers(queryNextLinkResult["@odata.nextLink"], usersOutput);
+        this._setUserState(usersOutput);
+      }
+    }
+    // Make initial query. 
+    else {
+      let queryUserResult = await this._queryUsers();
+      usersOutput.push(...this._filterUsers(queryUserResult));
+      if (queryUserResult["@odata.nextLink"]) {
+        this._queryAllUsers(queryUserResult["@odata.nextLink"], usersOutput);
+        this._setUserState(usersOutput);
+      }
+    }
   }
 
   /**
@@ -153,38 +172,6 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     return await client.api(nextLink).get();
   }
 
-  /**
-   * Step 1: Run _queryUsers() to get a list of users. 
-   * Step 2: If there are more users to be queried via '@odata.nextLink' run this method again. 
-   * Step 3: Repeat Step 2 until '@odata.nextLink' is not set. 
-   * Step 4: Run _setUserState() to render users on the page. 
-   * Step 5: ???
-   * @param nextLink 
-   * @param users 
-   */
-  private async _queryAllUsers(nextLink?, users?): Promise<any> {
-    let usersOutput = users ? users : [];
-  
-    if (nextLink) {
-      let queryNextLinkResult = await this._queryNextLink(nextLink);
-      usersOutput.push(...this._filterUsers(queryNextLinkResult));
-
-      if (queryNextLinkResult["@odata.nextLink"]) {
-        this._queryAllUsers(queryNextLinkResult["@odata.nextLink"], usersOutput);
-        this._setUserState(usersOutput);
-      }
-    }
-    // Make initial query. 
-    else {
-      let queryUserResult = await this._queryUsers();
-      usersOutput.push(...this._filterUsers(queryUserResult));
-      if (queryUserResult["@odata.nextLink"]) {
-        this._queryAllUsers(queryUserResult["@odata.nextLink"], usersOutput);
-        this._setUserState(usersOutput);
-      }
-    }
-  }
-
   private _setUserState(usersOutput, callback?: Function): void {
     let persona = [...usersOutput.map(user => {
       return {
@@ -203,11 +190,29 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
       if (callback) {
         callback();
       }
-      this._applySearchFilter(this.state.searchFilterString);
+      this._applySearchFilter(this.props.searchString);
     });
   }
+  //#endregion
 
-  //#region Grid Methods
+  //#region Help Methods
+
+  /**
+   * Sort the visible users by a given column. 
+   * @param items Visible Users.
+   * @param columnKey Field Name.
+   * @param isSortedDescending Is Sorted Descending (bool)
+   */
+  private _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
+    const key = columnKey as keyof T;
+    return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
+  }
+
+  /**
+   * Click event for sorting columns. 
+   * @param ev Event
+   * @param column Column Clicked
+   */
   private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
     const { columns, persona } = this.state;
     const newColumns: IColumn[] = columns.slice();
@@ -230,22 +235,15 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
       columns: newColumns
     });
   }
-
-  private _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
-    const key = columnKey as keyof T;
-    return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
-  }
   //#endregion
 
-  //#region Search Box Events
+  //#region Search Methods
   /**
    * Take the users input from the search box and filter users.
    * This method will update the state object to display the correct users.
    * @param newValue User input from search box
    */
   private _applySearchFilter = (newValue: string) => {
-    debugger;
-    this.setState({ searchFilterString: newValue });
     let visibleUsers = this.state.persona;
     if (newValue) {
       newValue = newValue.toLowerCase();
@@ -268,24 +266,48 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     if (sortedColumn) {
       visibleUsers = this._copyAndSort(visibleUsers, sortedColumn.fieldName!, sortedColumn.isSortedDescending);
     }
-
-    debugger;
     this.setState({ persona: visibleUsers });
   }
-
-  private _onSearchChange = (event: any, newValue: string) => {
-    this._applySearchFilter(newValue);
-  }
   //#endregion
+
+  public render(): React.ReactElement<any> {
+    return <div>
+      {
+        this.state.persona === null ?
+          <MyShimmer /> :
+          <DetailsList
+            items={this.state.persona}
+            columns={this.state.columns}
+            selectionMode={SelectionMode.none}
+            onShouldVirtualize={() => false}
+          />
+      }
+    </div>;
+  }
+}
+
+export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState> {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      users: this.props.users,
+      persona: null,
+      allPersonas: [],
+    };
+
+    //this._queryAllUsers();
+  }
 
   public render(): React.ReactElement<IClaringtonStaffDirectoryProps> {
     return (
       <div style={{ maxWidth: '1300px', margin: 'auto' }}>
-        {
-          this.state.persona === null ?
-            <MyShimmer /> :
-            <StaffGrid onSearchChange={this._onSearchChange} items={this.state.persona} columns={this.state.columns} />
-        }
+        <SearchBox
+          placeholder={"Search by Name, Job Title, or Department"}
+          onChange={(event: any, newValue: string) => this.setState({ searchString: newValue })}
+        />
+        <StaffGrid {...this.props} searchString={this.state.searchString} />
       </div>
     );
   }

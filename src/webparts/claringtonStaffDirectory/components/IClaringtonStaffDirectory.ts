@@ -10,7 +10,6 @@ export interface IClaringtonStaffDirectoryProps {
 export interface IClaringtonStaffDirectoryState {
     users: IUser[];
     persona: any;
-    allPersonas: any;
-    columns: any;
-    searchFilterString?: string;
+    allPersonas: any;    
+    searchString?: string;
 }
