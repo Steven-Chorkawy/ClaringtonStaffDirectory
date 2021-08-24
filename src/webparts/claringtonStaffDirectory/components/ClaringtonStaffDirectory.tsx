@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList.types';
-import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react/lib/Persona';
+import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton, SearchBox } from '@fluentui/react';
 
 
-import { IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState } from './IClaringtonStaffDirectory';
+import { IClaringtonStaffDirectoryProps } from './IClaringtonStaffDirectory';
 
 
 class MyShimmer extends React.Component {
@@ -286,18 +286,10 @@ class StaffGrid extends React.Component<any, any> {
   }
 }
 
-export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState> {
+export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, any> {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      users: this.props.users,
-      persona: null,
-      allPersonas: [],
-    };
-
-    //this._queryAllUsers();
   }
 
   public render(): React.ReactElement<IClaringtonStaffDirectoryProps> {
