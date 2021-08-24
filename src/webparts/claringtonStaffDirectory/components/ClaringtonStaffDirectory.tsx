@@ -100,13 +100,14 @@ class StaffGrid extends React.Component<any, any> {
           ),
         },
       ],
+      groups: [],
       persona: null,
     };
 
     this._queryAllUsers();
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  public componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.searchString !== this.props.searchString) {
       this._applySearchFilter(this.props.searchString);
     }
@@ -196,6 +197,42 @@ class StaffGrid extends React.Component<any, any> {
   //#endregion
 
   //#region Help Methods
+  /**
+   * Generate an array that has the users grouped by a given field. 
+   * Source: https://stackoverflow.com/a/65834042
+   * 
+   * @param itemsList Visible Users.
+   * @param fieldName Grouped Field.
+   */
+  public groupsGenerator(itemsList, fieldName) {
+    // Array of group objects
+    const groupObjArr = [];
+
+    // Get the group names from the items list
+    const groupNames = new Set(itemsList.map(item => item[fieldName]));
+    debugger;
+
+    // Iterate through each group name to build proper group object
+    groupNames.forEach(gn => {
+      // Count group items
+      const groupLength = itemsList.filter(item => item[fieldName] === gn).length;
+
+      // Find the first group index
+      const groupIndex = itemsList.map(item => item[fieldName]).indexOf(gn);
+
+      // Generate a group object
+      groupObjArr.push({
+        key: gn, name: gn, level: 0, count: groupLength, startIndex: groupIndex
+      });
+    });
+
+    debugger;
+
+    this.setState({ groups: groupObjArr });
+
+    // The final groups array returned
+    return groupObjArr;
+  }
 
   /**
    * Sort the visible users by a given column. 
@@ -266,7 +303,10 @@ class StaffGrid extends React.Component<any, any> {
     if (sortedColumn) {
       visibleUsers = this._copyAndSort(visibleUsers, sortedColumn.fieldName!, sortedColumn.isSortedDescending);
     }
-    this.setState({ persona: visibleUsers });
+    this.setState({ persona: visibleUsers }, () => {
+      debugger;
+      this.groupsGenerator(this.state.persona, "department");
+    });
   }
   //#endregion
 
@@ -278,6 +318,7 @@ class StaffGrid extends React.Component<any, any> {
           <DetailsList
             items={this.state.persona}
             columns={this.state.columns}
+            groups={this.state.groups}
             selectionMode={SelectionMode.none}
             onShouldVirtualize={() => false}
           />
@@ -290,6 +331,9 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
 
   constructor(props) {
     super(props);
+    this.state = {
+      searchString: undefined
+    };
   }
 
   public render(): React.ReactElement<IClaringtonStaffDirectoryProps> {
