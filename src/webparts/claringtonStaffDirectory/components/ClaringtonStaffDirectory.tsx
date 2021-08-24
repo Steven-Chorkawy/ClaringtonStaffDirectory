@@ -60,7 +60,7 @@ class StaffGrid extends React.Component<any, any> {
           fieldName: 'department',
           minWidth: 200,
           isResizable: true,
-          isSorted: false,
+          isSorted: true,
           isSortedDescending: false,
           sortAscendingAriaLabel: 'Sorted A to Z',
           sortDescendingAriaLabel: 'Sorted Z to A',
@@ -208,6 +208,11 @@ class StaffGrid extends React.Component<any, any> {
     // Array of group objects
     const groupObjArr = [];
 
+    debugger;
+    // Sort itemsList by fieldName.
+    //itemsList = this._copyAndSort(itemsList, fieldName, false);
+
+
     // Get the group names from the items list
     const groupNames = new Set(itemsList.map(item => item[fieldName]));
     debugger;
@@ -265,12 +270,12 @@ class StaffGrid extends React.Component<any, any> {
       }
     });
 
-    const newUsers = this._copyAndSort(persona, currColumn.fieldName!, currColumn.isSortedDescending);
+    const newUsers = this._copyAndSort(persona, currColumn.fieldName!, currColumn.isSortedDescending);  
 
     this.setState({
       persona: newUsers,
       columns: newColumns
-    });
+    }, () => this.groupsGenerator(newUsers, 'department'));
   }
   //#endregion
 
@@ -304,7 +309,6 @@ class StaffGrid extends React.Component<any, any> {
       visibleUsers = this._copyAndSort(visibleUsers, sortedColumn.fieldName!, sortedColumn.isSortedDescending);
     }
     this.setState({ persona: visibleUsers }, () => {
-      debugger;
       this.groupsGenerator(this.state.persona, "department");
     });
   }
