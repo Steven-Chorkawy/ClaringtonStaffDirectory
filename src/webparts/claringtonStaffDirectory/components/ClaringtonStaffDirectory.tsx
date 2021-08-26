@@ -41,7 +41,7 @@ class StaffGrid extends React.Component<any, any> {
           name: 'Name',
           fieldName: 'displayName',
           minWidth: 50,
-          isSorted: false,
+          isSorted: true,
           isResizable: true,
           isSortedDescending: false,
           sortAscendingAriaLabel: 'Sorted A to Z',
@@ -60,7 +60,7 @@ class StaffGrid extends React.Component<any, any> {
           fieldName: 'department',
           minWidth: 200,
           isResizable: true,
-          isSorted: true,
+          isSorted: false,
           isSortedDescending: false,
           sortAscendingAriaLabel: 'Sorted A to Z',
           sortDescendingAriaLabel: 'Sorted Z to A',
@@ -256,22 +256,13 @@ class StaffGrid extends React.Component<any, any> {
       }, {});
 
       // Iterate over each group/department. 
-      for(var departmentKey in group) {
-        if(group.hasOwnProperty(departmentKey)) {
+      for (var departmentKey in group) {
+        if (group.hasOwnProperty(departmentKey)) {
           // This should sort the department users but maintain their department grouping.s
-          output.push(...group[departmentKey].slice(0).sort((a: T, b: T) => ((!isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1)));
+          output.push(...group[departmentKey].slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1)));
         }
       }
-
-      debugger;
-      console.log('\nOutput:');
-      console.log(output);
       return output;
-      // return items.slice(0).sort((a: T, b: T) => {
-      //   debugger;
-      //   //return ((isSortedDescending ? (a['department'] - b['department'] || a[key] < b[key]) : (a['department'] - b['department'] || a[key] > b[key])) ? 1 : -1);
-      //   return (a['department'] < b['department'] || b[key] < a[key] ? 1 : -1);
-      // });
     }
   }
 
@@ -327,12 +318,18 @@ class StaffGrid extends React.Component<any, any> {
       visibleUsers = this.state.allPersonas;
     }
 
+    // ALWAYS sort by department first.  This will ensure that the list of users is first sorted by department, then sorted by other columns. 
+    
+    visibleUsers = visibleUsers.slice(0).sort((a, b) => ((a['department'] > b['department'] ? 1 : -1)));
+
     // Apply any sorting. 
     let sortedColumn = this.state.columns.find(col => { return col.isSorted; });
 
     if (sortedColumn) {
       visibleUsers = this._copyAndSort(visibleUsers, sortedColumn.fieldName!, sortedColumn.isSortedDescending);
     }
+
+    // * This is where we set what users will be displayed. 
     this.setState({ persona: visibleUsers }, () => {
       this.groupsGenerator(this.state.persona, "department");
     });
