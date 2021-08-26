@@ -6,10 +6,3 @@ export interface IClaringtonStaffDirectoryProps {
     clientMode: any;
     context: any;
 }
-
-export interface IClaringtonStaffDirectoryState {
-    users: IUser[];
-    persona: any;
-    allPersonas: any;    
-    searchString?: string;
-}

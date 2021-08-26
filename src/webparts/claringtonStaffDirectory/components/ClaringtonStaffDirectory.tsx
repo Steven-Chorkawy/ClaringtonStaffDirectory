@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList.types';
-import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react/lib/Persona';
+import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton, SearchBox } from '@fluentui/react';
 
 
-import { IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState } from './IClaringtonStaffDirectory';
+import { IClaringtonStaffDirectoryProps } from './IClaringtonStaffDirectory';
 
 
 class MyShimmer extends React.Component {
@@ -40,8 +40,8 @@ class StaffGrid extends React.Component<any, any> {
           key: 'column1',
           name: 'Name',
           fieldName: 'displayName',
-          minWidth: 50,
-          isSorted: false,
+          minWidth: 200,
+          isSorted: true,
           isResizable: true,
           isSortedDescending: false,
           sortAscendingAriaLabel: 'Sorted A to Z',
@@ -100,13 +100,14 @@ class StaffGrid extends React.Component<any, any> {
           ),
         },
       ],
+      groups: [],
       persona: null,
     };
 
     this._queryAllUsers();
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  public componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.searchString !== this.props.searchString) {
       this._applySearchFilter(this.props.searchString);
     }
@@ -196,16 +197,73 @@ class StaffGrid extends React.Component<any, any> {
   //#endregion
 
   //#region Help Methods
+  /**
+   * Generate an array that has the users grouped by a given field. 
+   * Source: https://stackoverflow.com/a/65834042
+   * 
+   * @param itemsList Visible Users.
+   * @param fieldName Grouped Field.
+   */
+  public groupsGenerator(itemsList, fieldName) {
+    // Array of group objects
+    const groupObjArr = [];
+
+    // Get the group names from the items list
+    const groupNames = new Set(itemsList.map(item => item[fieldName]));
+
+    // Iterate through each group name to build proper group object
+    groupNames.forEach(gn => {
+      // Count group items
+      const groupLength = itemsList.filter(item => item[fieldName] === gn).length;
+
+      // Find the first group index
+      const groupIndex = itemsList.map(item => item[fieldName]).indexOf(gn);
+
+      // Generate a group object
+      groupObjArr.push({
+        key: gn, name: gn, level: 0, count: groupLength, startIndex: groupIndex
+      });
+    });
+
+    this.setState({ groups: groupObjArr });
+
+    // The final groups array returned
+    return groupObjArr;
+  }
 
   /**
-   * Sort the visible users by a given column. 
+   * Sort the visible users by a given column.
+   * This method will always apply two sorts to the array of users.  The first will always be the department columns.  The second is whatever the user wants.  
    * @param items Visible Users.
    * @param columnKey Field Name.
    * @param isSortedDescending Is Sorted Descending (bool)
    */
   private _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
     const key = columnKey as keyof T;
-    return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
+
+    if (columnKey === 'department') {
+      // Sory by just Department.
+      return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
+    }
+    else {
+      // Sort by Department AND columnKey.  
+      let output = [];
+
+      // Group everything by departments. 
+      let group = items.reduce((r, a) => {
+        r[a['department']] = [...r[a['department']] || [], a];
+        return r;
+      }, {});
+
+      // Iterate over each group/department. 
+      for (var departmentKey in group) {
+        if (group.hasOwnProperty(departmentKey)) {
+          // This should sort the department users but maintain their department grouping.s
+          output.push(...group[departmentKey].slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1)));
+        }
+      }
+      return output;
+    }
   }
 
   /**
@@ -233,7 +291,7 @@ class StaffGrid extends React.Component<any, any> {
     this.setState({
       persona: newUsers,
       columns: newColumns
-    });
+    }, () => this.groupsGenerator(newUsers, 'department'));
   }
   //#endregion
 
@@ -260,13 +318,21 @@ class StaffGrid extends React.Component<any, any> {
       visibleUsers = this.state.allPersonas;
     }
 
+    // ALWAYS sort by department first.  This will ensure that the list of users is first sorted by department, then sorted by other columns. 
+    
+    visibleUsers = visibleUsers.slice(0).sort((a, b) => ((a['department'] > b['department'] ? 1 : -1)));
+
     // Apply any sorting. 
     let sortedColumn = this.state.columns.find(col => { return col.isSorted; });
 
     if (sortedColumn) {
       visibleUsers = this._copyAndSort(visibleUsers, sortedColumn.fieldName!, sortedColumn.isSortedDescending);
     }
-    this.setState({ persona: visibleUsers });
+
+    // * This is where we set what users will be displayed. 
+    this.setState({ persona: visibleUsers }, () => {
+      this.groupsGenerator(this.state.persona, "department");
+    });
   }
   //#endregion
 
@@ -278,6 +344,7 @@ class StaffGrid extends React.Component<any, any> {
           <DetailsList
             items={this.state.persona}
             columns={this.state.columns}
+            groups={this.state.groups}
             selectionMode={SelectionMode.none}
             onShouldVirtualize={() => false}
           />
@@ -286,18 +353,13 @@ class StaffGrid extends React.Component<any, any> {
   }
 }
 
-export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, IClaringtonStaffDirectoryState> {
+export default class ClaringtonStaffDirectory extends React.Component<IClaringtonStaffDirectoryProps, any> {
 
   constructor(props) {
     super(props);
-
     this.state = {
-      users: this.props.users,
-      persona: null,
-      allPersonas: [],
+      searchString: undefined
     };
-
-    //this._queryAllUsers();
   }
 
   public render(): React.ReactElement<IClaringtonStaffDirectoryProps> {
