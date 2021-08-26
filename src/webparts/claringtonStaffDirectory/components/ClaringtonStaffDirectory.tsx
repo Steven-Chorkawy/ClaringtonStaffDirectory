@@ -208,14 +208,8 @@ class StaffGrid extends React.Component<any, any> {
     // Array of group objects
     const groupObjArr = [];
 
-    debugger;
-    // Sort itemsList by fieldName.
-    //itemsList = this._copyAndSort(itemsList, fieldName, false);
-
-
     // Get the group names from the items list
     const groupNames = new Set(itemsList.map(item => item[fieldName]));
-    debugger;
 
     // Iterate through each group name to build proper group object
     groupNames.forEach(gn => {
@@ -231,8 +225,6 @@ class StaffGrid extends React.Component<any, any> {
       });
     });
 
-    debugger;
-
     this.setState({ groups: groupObjArr });
 
     // The final groups array returned
@@ -240,14 +232,47 @@ class StaffGrid extends React.Component<any, any> {
   }
 
   /**
-   * Sort the visible users by a given column. 
+   * Sort the visible users by a given column.
+   * This method will always apply two sorts to the array of users.  The first will always be the department columns.  The second is whatever the user wants.  
    * @param items Visible Users.
    * @param columnKey Field Name.
    * @param isSortedDescending Is Sorted Descending (bool)
    */
   private _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
     const key = columnKey as keyof T;
-    return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
+
+    if (columnKey === 'department') {
+      // Sory by just Department.
+      return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
+    }
+    else {
+      // Sort by Department AND columnKey.  
+      let output = [];
+
+      // Group everything by departments. 
+      let group = items.reduce((r, a) => {
+        r[a['department']] = [...r[a['department']] || [], a];
+        return r;
+      }, {});
+
+      // Iterate over each group/department. 
+      for(var departmentKey in group) {
+        if(group.hasOwnProperty(departmentKey)) {
+          // This should sort the department users but maintain their department grouping.s
+          output.push(...group[departmentKey].slice(0).sort((a: T, b: T) => ((!isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1)));
+        }
+      }
+
+      debugger;
+      console.log('\nOutput:');
+      console.log(output);
+      return output;
+      // return items.slice(0).sort((a: T, b: T) => {
+      //   debugger;
+      //   //return ((isSortedDescending ? (a['department'] - b['department'] || a[key] < b[key]) : (a['department'] - b['department'] || a[key] > b[key])) ? 1 : -1);
+      //   return (a['department'] < b['department'] || b[key] < a[key] ? 1 : -1);
+      // });
+    }
   }
 
   /**
@@ -270,7 +295,7 @@ class StaffGrid extends React.Component<any, any> {
       }
     });
 
-    const newUsers = this._copyAndSort(persona, currColumn.fieldName!, currColumn.isSortedDescending);  
+    const newUsers = this._copyAndSort(persona, currColumn.fieldName!, currColumn.isSortedDescending);
 
     this.setState({
       persona: newUsers,
