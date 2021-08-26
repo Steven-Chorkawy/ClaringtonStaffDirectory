@@ -40,7 +40,7 @@ class StaffGrid extends React.Component<any, any> {
           key: 'column1',
           name: 'Name',
           fieldName: 'displayName',
-          minWidth: 50,
+          minWidth: 200,
           isSorted: true,
           isResizable: true,
           isSortedDescending: false,
