@@ -127,21 +127,35 @@ class StaffGrid extends React.Component<any, any> {
     let usersOutput = users ? users : [];
 
     if (nextLink) {
+      // Run the next query for more users.
       let queryNextLinkResult = await this._queryNextLink(nextLink);
+
+      // Take the results of the next query and append them to the running total.
       usersOutput.push(...this._filterUsers(queryNextLinkResult));
 
+      // Render the running total of users that we have queried so far.
+      // * This will continue to render users until we have queried all of them.
+      this._setUserState(usersOutput);
+
+      // After running the next query, check if there is another next query.  
       if (queryNextLinkResult["@odata.nextLink"]) {
         this._queryAllUsers(queryNextLinkResult["@odata.nextLink"], usersOutput);
-        this._setUserState(usersOutput);
       }
     }
     // Make initial query. 
     else {
+      // Run the initial query for users. 
       let queryUserResult = await this._queryUsers();
+
+      // Append the results of the initial query to a running list of users.
       usersOutput.push(...this._filterUsers(queryUserResult));
+
+      // Render the list of users that we have queried. 
+      this._setUserState(usersOutput);
+
+      // If there are more users to be discovered, we will query them here. 
       if (queryUserResult["@odata.nextLink"]) {
         this._queryAllUsers(queryUserResult["@odata.nextLink"], usersOutput);
-        this._setUserState(usersOutput);
       }
     }
   }
@@ -159,6 +173,7 @@ class StaffGrid extends React.Component<any, any> {
         && value.department != null
         && value.accountEnabled === true;
     });
+    
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
     return claringtonUsers;
   }
