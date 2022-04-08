@@ -173,19 +173,36 @@ class StaffGrid extends React.Component<any, any> {
         && value.department != null
         && value.accountEnabled === true;
     });
-    
+
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
+
+    // Whenever the users have been filtered save the filtered result in local storage. 
+    this._saveUsersInLocalStorage();
+
     return claringtonUsers;
   }
 
-  private async _queryUsers(): Promise<any> {
+  private async _queryUsers(nextLink?: string): Promise<any> {
     let client = await this.props.context.msGraphClientFactory.getClient();
-    return await client.api('users').top(200).select(['displayName', 'surname', 'givenName', 'mail', 'jobTitle', 'businessPhones', 'department', 'mobilePhone', 'userPrincipalName', 'accountEnabled']).get();
+
+    // Before querying AD, check to see if there are any users in local storage. 
+    let usersFromLocalStorage = this._getUsersFromLocalStorage();
+
+    // If there are any users in local storage return those users BEFORE we query AD.
+    // if(usersFromLocalStorage) {
+    //   return usersFromLocalStorage
+    // }
+
+    if (nextLink) {
+      return await client.api(nextLink).get();
+    }
+    else {
+      return await client.api('users').top(200).select(['displayName', 'surname', 'givenName', 'mail', 'jobTitle', 'businessPhones', 'department', 'mobilePhone', 'userPrincipalName', 'accountEnabled']).get();
+    }
   }
 
   private async _queryNextLink(nextLink): Promise<any> {
-    let client = await this.props.context.msGraphClientFactory.getClient();
-    return await client.api(nextLink).get();
+    return await this._queryUsers(nextLink);
   }
 
   private _setUserState(usersOutput, callback?: Function): void {
@@ -208,6 +225,27 @@ class StaffGrid extends React.Component<any, any> {
       }
       this._applySearchFilter(this.props.searchString);
     });
+  }
+
+  /**
+   * Get a list of users from local storage. 
+   */
+  private _getUsersFromLocalStorage = () => {
+    alert('_getUsersFromLocalStorage');
+  }
+
+  /**
+   * Set users that have been queried from AD.
+   */
+  private _saveUsersInLocalStorage = () => {
+    alert('_saveUsersInLocalStorage');
+  }
+
+  /**
+   * Delete any and all users saved in local storage, query AD for a list of users, save the new result in local storage.
+   */
+  private _clearLocalStorageAndQueryAD = () => {
+    alert('_clearLocalStorageAndQueryAD');
   }
   //#endregion
 
@@ -334,7 +372,7 @@ class StaffGrid extends React.Component<any, any> {
     }
 
     // ALWAYS sort by department first.  This will ensure that the list of users is first sorted by department, then sorted by other columns. 
-    
+
     visibleUsers = visibleUsers.slice(0).sort((a, b) => ((a['department'] > b['department'] ? 1 : -1)));
 
     // Apply any sorting. 
