@@ -5,7 +5,16 @@ import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/component
 import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton, SearchBox } from '@fluentui/react';
 
-
+import { TemplateHelper } from '@microsoft/mgt';
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'mgt-person': any;
+      'mgt-person-card': any;
+      'template': any;
+    }
+  }
+}
 import { IClaringtonStaffDirectoryProps } from './IClaringtonStaffDirectory';
 
 
@@ -48,10 +57,11 @@ class StaffGrid extends React.Component<any, any> {
           sortDescendingAriaLabel: 'Sorted Z to A',
           onColumnClick: this._onColumnClick,
           onRender: (item: any) => (
-            <Persona
-              {...item}
-              size={PersonaSize.size40}
-            />
+            <mgt-person person-query={item.mail} show-name show-email person-card="hover"></mgt-person>
+            // <Persona
+            //   {...item}
+            //   size={PersonaSize.size40}
+            // />
           ),
         },
         {
@@ -173,7 +183,7 @@ class StaffGrid extends React.Component<any, any> {
         && value.department != null
         && value.accountEnabled === true;
     });
-    
+
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
     return claringtonUsers;
   }
@@ -334,7 +344,7 @@ class StaffGrid extends React.Component<any, any> {
     }
 
     // ALWAYS sort by department first.  This will ensure that the list of users is first sorted by department, then sorted by other columns. 
-    
+
     visibleUsers = visibleUsers.slice(0).sort((a, b) => ((a['department'] > b['department'] ? 1 : -1)));
 
     // Apply any sorting. 

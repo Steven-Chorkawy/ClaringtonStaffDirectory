@@ -12,6 +12,7 @@ import ClaringtonStaffDirectory from './components/ClaringtonStaffDirectory';
 import { IClaringtonStaffDirectoryProps } from './components/IClaringtonStaffDirectory';
 import { ClientMode } from './components/ClientMode';
 import { IUser } from './interface/IUser';
+import { Providers, SharePointProvider } from '@microsoft/mgt';
 
 export interface IClaringtonStaffDirectoryWebPartProps {
   description: string;
@@ -37,6 +38,10 @@ export default class ClaringtonStaffDirectoryWebPart extends BaseClientSideWebPa
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
+  }
+
+  protected async onInit() {
+    Providers.globalProvider = new SharePointProvider(this.context);
   }
 
   protected get dataVersion(): Version {
