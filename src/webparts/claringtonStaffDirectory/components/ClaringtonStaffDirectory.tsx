@@ -177,7 +177,7 @@ class StaffGrid extends React.Component<any, any> {
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
 
     // Whenever the users have been filtered save the filtered result in local storage. 
-    this._saveUsersInLocalStorage();
+    this._saveUsersInLocalStorage(claringtonUsers);
 
     return claringtonUsers;
   }
@@ -185,18 +185,22 @@ class StaffGrid extends React.Component<any, any> {
   private async _queryUsers(nextLink?: string): Promise<any> {
     let client = await this.props.context.msGraphClientFactory.getClient();
 
-    // Before querying AD, check to see if there are any users in local storage. 
-    let usersFromLocalStorage = this._getUsersFromLocalStorage();
-
-    // If there are any users in local storage return those users BEFORE we query AD.
-    // if(usersFromLocalStorage) {
-    //   return usersFromLocalStorage
-    // }
-
+    // Check to see if 'nextLink' has been passed into this function.  If it has been passed we can assume that we're query from AD.
     if (nextLink) {
       return await client.api(nextLink).get();
     }
     else {
+
+      // Since 'nextLink' has not been provided this means we are running our first search.
+      // Before querying AD, check to see if there are any users in local storage. 
+      let usersFromLocalStorage = this._getUsersFromLocalStorage();
+
+      // If there are any users in local storage return those users BEFORE we query AD.
+      // TODO: Uncomment the if statement below when ready.
+      // if(usersFromLocalStorage) {
+      //   return usersFromLocalStorage
+      // }
+
       return await client.api('users').top(200).select(['displayName', 'surname', 'givenName', 'mail', 'jobTitle', 'businessPhones', 'department', 'mobilePhone', 'userPrincipalName', 'accountEnabled']).get();
     }
   }
@@ -231,14 +235,27 @@ class StaffGrid extends React.Component<any, any> {
    * Get a list of users from local storage. 
    */
   private _getUsersFromLocalStorage = () => {
-    alert('_getUsersFromLocalStorage');
+    // TODO: This method should check and return any users found in local storage.
+
+    // Go to https://pnp.github.io/pnpjs/v1/common/docs/storage/ to see how to read from local storage.
+    alert('_getUsersFromLocalStorage'); // This is for testing, remove it once this method is working.
   }
 
   /**
    * Set users that have been queried from AD.
+   * This method should override any existing values that are being stored in local storage.
    */
-  private _saveUsersInLocalStorage = () => {
-    alert('_saveUsersInLocalStorage');
+  private _saveUsersInLocalStorage = (input: any) => {
+    // TODO: Store the 'input' parameter into local storage.  If an object is already in local storage replace it with the new input.
+    // Go to https://pnp.github.io/pnpjs/v1/common/docs/storage/ to see how to save to local storage. 
+    /**
+     * Note: You will need to save input as an object in local storage.
+      storage.local.put("mykey3", {
+          key: "value",
+          key2: "value2",
+      });
+     */
+    alert('_saveUsersInLocalStorage'); // This is for testing, remove it once this method is working.
   }
 
   /**
