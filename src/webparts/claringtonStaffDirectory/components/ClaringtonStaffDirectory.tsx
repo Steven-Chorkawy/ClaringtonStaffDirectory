@@ -4,6 +4,7 @@ import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton, SearchBox } from '@fluentui/react';
+import { PnPClientStorage } from "@pnp/core";
 
 
 import { IClaringtonStaffDirectoryProps } from './IClaringtonStaffDirectory';
@@ -107,6 +108,9 @@ class StaffGrid extends React.Component<any, any> {
     this._queryAllUsers();
   }
 
+  private storage = new PnPClientStorage();
+  private STORAGE_KEY = 'myTestKey';
+
   public componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.searchString !== this.props.searchString) {
       this._applySearchFilter(this.props.searchString);
@@ -141,14 +145,30 @@ class StaffGrid extends React.Component<any, any> {
       if (queryNextLinkResult["@odata.nextLink"]) {
         this._queryAllUsers(queryNextLinkResult["@odata.nextLink"], usersOutput);
       }
+      else {
+        alert('ALL DONE!  NO MORE NEXTLINK!');
+        // Whenever the users have been filtered save the filtered result in local storage. 
+        this._saveUsersInLocalStorage(usersOutput);
+      }
     }
     // Make initial query. 
     else {
       // Run the initial query for users. 
+      debugger;
       let queryUserResult = await this._queryUsers();
+      debugger;
 
-      // Append the results of the initial query to a running list of users.
-      usersOutput.push(...this._filterUsers(queryUserResult));
+      if (queryUserResult.hasOwnProperty('value')) {
+        // Append the results of the initial query to a running list of users.
+        usersOutput.push(...this._filterUsers(queryUserResult));
+      }
+      else if (queryUserResult.length > 0) {
+        usersOutput.push(...this._filterUsers({ value: queryUserResult }));
+      }
+      else {
+        // This shouldn't happen.... I hope.
+        alert('Something went wrong.  Please contact helpdesk@clarington.net');
+      }
 
       // Render the list of users that we have queried. 
       this._setUserState(usersOutput);
@@ -176,9 +196,6 @@ class StaffGrid extends React.Component<any, any> {
 
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
 
-    // Whenever the users have been filtered save the filtered result in local storage. 
-    this._saveUsersInLocalStorage(claringtonUsers);
-
     return claringtonUsers;
   }
 
@@ -190,18 +207,18 @@ class StaffGrid extends React.Component<any, any> {
       return await client.api(nextLink).get();
     }
     else {
-
       // Since 'nextLink' has not been provided this means we are running our first search.
       // Before querying AD, check to see if there are any users in local storage. 
       let usersFromLocalStorage = this._getUsersFromLocalStorage();
 
       // If there are any users in local storage return those users BEFORE we query AD.
       // TODO: Uncomment the if statement below when ready.
-      // if(usersFromLocalStorage) {
-      //   return usersFromLocalStorage
-      // }
-
-      return await client.api('users').top(200).select(['displayName', 'surname', 'givenName', 'mail', 'jobTitle', 'businessPhones', 'department', 'mobilePhone', 'userPrincipalName', 'accountEnabled']).get();
+      if (usersFromLocalStorage) {
+        return usersFromLocalStorage;
+      }
+      else {
+        return await client.api('users').top(200).select(['displayName', 'surname', 'givenName', 'mail', 'jobTitle', 'businessPhones', 'department', 'mobilePhone', 'userPrincipalName', 'accountEnabled']).get();
+      }
     }
   }
 
@@ -236,9 +253,11 @@ class StaffGrid extends React.Component<any, any> {
    */
   private _getUsersFromLocalStorage = () => {
     // TODO: This method should check and return any users found in local storage.
+    // How it should work. 
+    return this.storage.local.get(this.STORAGE_KEY);
 
-    // Go to https://pnp.github.io/pnpjs/v1/common/docs/storage/ to see how to read from local storage.
-    alert('_getUsersFromLocalStorage'); // This is for testing, remove it once this method is working.
+    // But what happens when it doesn't work. 
+    //return this.storage.local.get('badkeythatdoesntexistqwerty');
   }
 
   /**
@@ -246,16 +265,7 @@ class StaffGrid extends React.Component<any, any> {
    * This method should override any existing values that are being stored in local storage.
    */
   private _saveUsersInLocalStorage = (input: any) => {
-    // TODO: Store the 'input' parameter into local storage.  If an object is already in local storage replace it with the new input.
-    // Go to https://pnp.github.io/pnpjs/v1/common/docs/storage/ to see how to save to local storage. 
-    /**
-     * Note: You will need to save input as an object in local storage.
-      storage.local.put("mykey3", {
-          key: "value",
-          key2: "value2",
-      });
-     */
-    alert('_saveUsersInLocalStorage'); // This is for testing, remove it once this method is working.
+    this.storage.local.put(this.STORAGE_KEY, input, new Date(Date.now() + (6.048e+8)));
   }
 
   /**
