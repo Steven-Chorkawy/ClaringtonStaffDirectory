@@ -6,7 +6,7 @@ import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton, SearchBox } from '@fluentui/react';
 
 
-import { IClaringtonStaffDirectoryProps } from './IClaringtonStaffDirectory';
+import { IClaringtonStaffDirectoryProps, IStaffGridState } from './IClaringtonStaffDirectory';
 
 
 class MyShimmer extends React.Component {
@@ -31,10 +31,13 @@ class MyShimmer extends React.Component {
   }
 }
 
-class StaffGrid extends React.Component<any, any> {
+
+
+class StaffGrid extends React.Component<any, IStaffGridState> {
   constructor(props) {
     super(props);
     this.state = {
+      loadingUsers: true, // This will indicate if we should show or hide the loading icons.
       columns: [
         {
           key: 'column1',
@@ -102,6 +105,7 @@ class StaffGrid extends React.Component<any, any> {
       ],
       groups: [],
       persona: null,
+      allPersonas: null
     };
 
     this._queryAllUsers();
@@ -200,7 +204,7 @@ class StaffGrid extends React.Component<any, any> {
     })];
 
     this.setState({
-      users: usersOutput,
+      //users: usersOutput,
       allPersonas: persona
     }, () => {
       if (callback) {
