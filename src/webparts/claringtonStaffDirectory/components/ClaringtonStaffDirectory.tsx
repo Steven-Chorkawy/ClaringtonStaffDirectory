@@ -4,15 +4,12 @@ import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton, SearchBox } from '@fluentui/react';
-
-
-import { IClaringtonStaffDirectoryProps } from './IClaringtonStaffDirectory';
-
+import { IClaringtonStaffDirectoryProps, IStaffGridState } from './IClaringtonStaffDirectory';
 
 class MyShimmer extends React.Component {
   public render() {
     return (<div>
-      <div style={{ marginBottom: '15px' }}>
+      <div style={{ marginBottom: '15px', marginTop: '20px' }}>
         <Shimmer style={{ marginBottom: '5px' }} />
         <Shimmer width="75%" style={{ marginBottom: '5px' }} />
         <Shimmer width="50%" style={{ marginBottom: '5px' }} />
@@ -31,10 +28,11 @@ class MyShimmer extends React.Component {
   }
 }
 
-class StaffGrid extends React.Component<any, any> {
+class StaffGrid extends React.Component<any, IStaffGridState> {
   constructor(props) {
     super(props);
     this.state = {
+      loadingUsers: true, // Set this to true by default.  It will be set to false if/when the AD query is complete.
       columns: [
         {
           key: 'column1',
@@ -102,6 +100,7 @@ class StaffGrid extends React.Component<any, any> {
       ],
       groups: [],
       persona: null,
+      allPersonas: null
     };
 
     this._queryAllUsers();
@@ -115,13 +114,14 @@ class StaffGrid extends React.Component<any, any> {
 
   //#region Get Users
   /**
+   * When this method is called for the first time BOTH parameters should be null.
    * Step 1: Run _queryUsers() to get a list of users. 
    * Step 2: If there are more users to be queried via '@odata.nextLink' run this method again. 
    * Step 3: Repeat Step 2 until '@odata.nextLink' is not set. 
    * Step 4: Run _setUserState() to render users on the page. 
    * Step 5: ???
-   * @param nextLink 
-   * @param users 
+   * @param nextLink A string that will tell AD to query the next batch of users.
+   * @param users An array of users that have already been queried.
    */
   private async _queryAllUsers(nextLink?, users?): Promise<any> {
     let usersOutput = users ? users : [];
@@ -140,6 +140,14 @@ class StaffGrid extends React.Component<any, any> {
       // After running the next query, check if there is another next query.  
       if (queryNextLinkResult["@odata.nextLink"]) {
         this._queryAllUsers(queryNextLinkResult["@odata.nextLink"], usersOutput);
+      }
+      else if (usersOutput.length > 0) {
+        // ! This is what hides the loading icons and displays the list of users.
+        /** 
+         * nextLink was provided as a parameter AND queryNextLinkResult["@odata.nextLink"] is not found AND there are users found in usersOutput.
+         * This means that we are done querying our users and it's time to hide the loading icons and show our users.
+        */
+        this.setState({ loadingUsers: false });
       }
     }
     // Make initial query. 
@@ -173,7 +181,7 @@ class StaffGrid extends React.Component<any, any> {
         && value.department != null
         && value.accountEnabled === true;
     });
-    
+
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
     return claringtonUsers;
   }
@@ -200,7 +208,7 @@ class StaffGrid extends React.Component<any, any> {
     })];
 
     this.setState({
-      users: usersOutput,
+      //users: usersOutput,
       allPersonas: persona
     }, () => {
       if (callback) {
@@ -334,7 +342,7 @@ class StaffGrid extends React.Component<any, any> {
     }
 
     // ALWAYS sort by department first.  This will ensure that the list of users is first sorted by department, then sorted by other columns. 
-    
+
     visibleUsers = visibleUsers.slice(0).sort((a, b) => ((a['department'] > b['department'] ? 1 : -1)));
 
     // Apply any sorting. 
@@ -354,7 +362,7 @@ class StaffGrid extends React.Component<any, any> {
   public render(): React.ReactElement<any> {
     return <div>
       {
-        this.state.persona === null ?
+        (this.state.persona === null || this.state.loadingUsers === true) ?
           <MyShimmer /> :
           <DetailsList
             items={this.state.persona}
