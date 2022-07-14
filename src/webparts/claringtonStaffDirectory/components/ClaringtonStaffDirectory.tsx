@@ -225,6 +225,8 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
       // If there are any users in local storage return those users BEFORE we query AD.
       // TODO: Uncomment the if statement below when ready.
       if (usersFromLocalStorage) {
+        // ! This is what hides the loading icons and displays the list of users.
+        this.setState({ loadingUsers: false });
         return usersFromLocalStorage;
       }
       else {
