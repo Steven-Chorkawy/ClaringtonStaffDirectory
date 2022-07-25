@@ -12,22 +12,24 @@ export default class CommandButtons extends React.Component<any, any> {
         const menuProps: IContextualMenuProps = {
             items: [
                 {
-                    key: 'emailMessage',
-                    text: 'Email message',
-                    iconProps: { iconName: 'Mail' },
+                    key: 'excelExport',
+                    text: 'Export to Excel',
+                    title: 'Download Staff list as excel document.',
+                    iconProps: { iconName: 'ExcelLogo' },
                 },
                 {
-                    key: 'calendarEvent',
-                    text: 'Calendar event',
-                    iconProps: { iconName: 'Calendar' },
+                    key: 'reloadStaffList',
+                    text: 'Refresh Staff List',
+                    title: 'Get most up-to-date list of staff members.',
+                    iconProps: { iconName: 'Refresh' },
                 },
             ],
             // By default, the menu will be focused when it opens. Uncomment the next line to prevent this.
             // shouldFocusOnMount: false
         };
 
-        const verticalMenuIcon: IIconProps = { iconName: 'MoreVertical' };
+        const moreOptionsButtonProps: IIconProps = { iconName: 'Add' };
         
-        return <CommandButton iconProps={verticalMenuIcon} text="Options" menuProps={menuProps} />
+        return <CommandButton title={'More Options'} iconProps={moreOptionsButtonProps} menuProps={menuProps} ariaLabel={'More Options'} />
     }
 } 
