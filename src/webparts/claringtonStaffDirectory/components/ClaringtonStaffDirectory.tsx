@@ -3,8 +3,9 @@ import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/Detai
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
-import { IconButton, SearchBox } from '@fluentui/react';
+import { CommandButton, IconButton, SearchBox } from '@fluentui/react';
 import { IClaringtonStaffDirectoryProps, IStaffGridState } from './IClaringtonStaffDirectory';
+import CommandButtons from './CommandButtons';
 
 class MyShimmer extends React.Component {
   public render() {
@@ -392,6 +393,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
           placeholder={"Search by Name, Job Title, or Department"}
           onChange={(event: any, newValue: string) => this.setState({ searchString: newValue })}
         />
+        <CommandButtons />
         <StaffGrid {...this.props} searchString={this.state.searchString} />
       </div>
     );
