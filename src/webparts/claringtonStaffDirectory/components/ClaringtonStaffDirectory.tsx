@@ -6,6 +6,10 @@ import { Shimmer } from 'office-ui-fabric-react';
 import { CommandButton, IconButton, SearchBox } from '@fluentui/react';
 import { IClaringtonStaffDirectoryProps, IStaffGridState } from './IClaringtonStaffDirectory';
 import CommandButtons from './CommandButtons';
+import {
+  ExcelExport,
+  ExcelExportColumn,
+} from "@progress/kendo-react-excel-export";
 
 class MyShimmer extends React.Component {
   public render() {
@@ -215,6 +219,7 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
       if (callback) {
         callback();
       }
+
       this._applySearchFilter(this.props.searchString);
     });
   }
@@ -386,6 +391,13 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     };
   }
 
+  public childElemnt = React.createRef<StaffGrid>();
+
+  public clickTest = () => {
+    const childElementValue: any = this.childElemnt.current;
+    console.log(childElementValue.state.persona)
+  }
+
   public render(): React.ReactElement<IClaringtonStaffDirectoryProps> {
     return (
       <div style={{ maxWidth: '1300px', margin: 'auto' }}>
@@ -400,6 +412,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
               text: 'Export to Excel',
               title: 'Download Staff list as excel document.',
               iconProps: { iconName: 'ExcelLogo' },
+              onClick: this.clickTest
             },
             {
               key: 'reloadStaffList',
@@ -409,7 +422,14 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
             },
           ]}
         />
-        <StaffGrid {...this.props} searchString={this.state.searchString} />
+        <StaffGrid ref={this.childElemnt} {...this.props} searchString={this.state.searchString} />
+
+        <ExcelExport>
+          <ExcelExportColumn field="displayName" title="Name" />
+          <ExcelExportColumn field="department" title="Department" />
+          <ExcelExportColumn field="mail" title="Email" />
+          {/* <ExcelExportColumn field="businessPhone" title="EXT" /> */}
+        </ExcelExport>
       </div>
     );
   }
