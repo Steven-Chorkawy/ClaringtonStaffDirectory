@@ -393,7 +393,22 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
           placeholder={"Search by Name, Job Title, or Department"}
           onChange={(event: any, newValue: string) => this.setState({ searchString: newValue })}
         />
-        <CommandButtons />
+        <CommandButtons
+          menuItems={[
+            {
+              key: 'excelExport',
+              text: 'Export to Excel',
+              title: 'Download Staff list as excel document.',
+              iconProps: { iconName: 'ExcelLogo' },
+            },
+            {
+              key: 'reloadStaffList',
+              text: 'Refresh Staff List',
+              title: 'Get most up-to-date list of staff members.',
+              iconProps: { iconName: 'Refresh' },
+            },
+          ]}
+        />
         <StaffGrid {...this.props} searchString={this.state.searchString} />
       </div>
     );

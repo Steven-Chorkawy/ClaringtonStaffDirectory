@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { CommandButton, IContextualMenuProps, IIconProps } from '@fluentui/react';
+import { CommandButton, IContextualMenuItem, IContextualMenuProps, IIconProps } from '@fluentui/react';
 
+export interface ICommandButtonsProps {
+    menuItems: IContextualMenuItem[];
+}
 
-export default class CommandButtons extends React.Component<any, any> {
+export default class CommandButtons extends React.Component<ICommandButtonsProps, any> {
 
     constructor(props) {
         super(props);
@@ -10,26 +13,13 @@ export default class CommandButtons extends React.Component<any, any> {
 
     public render(): React.ReactElement<any> {
         const menuProps: IContextualMenuProps = {
-            items: [
-                {
-                    key: 'excelExport',
-                    text: 'Export to Excel',
-                    title: 'Download Staff list as excel document.',
-                    iconProps: { iconName: 'ExcelLogo' },
-                },
-                {
-                    key: 'reloadStaffList',
-                    text: 'Refresh Staff List',
-                    title: 'Get most up-to-date list of staff members.',
-                    iconProps: { iconName: 'Refresh' },
-                },
-            ],
+            items: this.props.menuItems,
             // By default, the menu will be focused when it opens. Uncomment the next line to prevent this.
             // shouldFocusOnMount: false
         };
 
         const moreOptionsButtonProps: IIconProps = { iconName: 'Add' };
-        
+
         return <CommandButton title={'More Options'} iconProps={moreOptionsButtonProps} menuProps={menuProps} ariaLabel={'More Options'} />
     }
 } 
