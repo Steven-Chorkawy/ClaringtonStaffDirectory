@@ -20,6 +20,6 @@ export default class CommandButtons extends React.Component<ICommandButtonsProps
 
         const moreOptionsButtonProps: IIconProps = { iconName: 'Add' };
 
-        return <CommandButton title={'More Options'} iconProps={moreOptionsButtonProps} menuProps={menuProps} ariaLabel={'More Options'} />
+        return <CommandButton title={'More Options'} iconProps={moreOptionsButtonProps} menuProps={menuProps} ariaLabel={'More Options'} />;
     }
 } 

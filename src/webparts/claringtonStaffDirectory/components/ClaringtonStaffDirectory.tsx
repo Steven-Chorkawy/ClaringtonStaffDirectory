@@ -121,7 +121,7 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
     this.setState(
       { loadingUsers: false },
       () => {
-        this.props.loadingFinished()
+        this.props.loadingFinished();
       }
     );
   }
@@ -458,8 +458,9 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
         >
           <ExcelExportColumn field="displayName" title="Name" />
           <ExcelExportColumn field="department" title="Department" />
+          <ExcelExportColumn field="jobTitle" title="Position" />
           <ExcelExportColumn field="mail" title="Email" />
-          {/* <ExcelExportColumn field="businessPhone" title="EXT" /> */}
+          
         </ExcelExport>
       </div>
     );
