@@ -3,13 +3,17 @@ import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/Detai
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
-import { CommandButton, IconButton, SearchBox, TooltipHostBase } from '@fluentui/react';
+import { IconButton, SearchBox, CommandButton, TooltipHostBase } from '@fluentui/react';
 import { IClaringtonStaffDirectoryProps, IStaffGridState } from './IClaringtonStaffDirectory';
 import CommandButtons from './CommandButtons';
 import {
   ExcelExport,
   ExcelExportColumn,
 } from "@progress/kendo-react-excel-export";
+
+import { PnPClientStorage } from "@pnp/core";
+
+
 
 class MyShimmer extends React.Component {
   public render() {
@@ -111,6 +115,9 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
     this._queryAllUsers();
   }
 
+  private storage = new PnPClientStorage();
+  private STORAGE_KEY = 'StaffDirectoryUsers';
+
   public componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.searchString !== this.props.searchString) {
       this._applySearchFilter(this.props.searchString);
@@ -160,16 +167,32 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
          * nextLink was provided as a parameter AND queryNextLinkResult["@odata.nextLink"] is not found AND there are users found in usersOutput.
          * This means that we are done querying our users and it's time to hide the loading icons and show our users.
         */
+
+        this.setState({ loadingUsers: false });
+
+        // Whenever the users have been filtered save the filtered result in local storage. 
+        this._saveUsersInLocalStorage(usersOutput);
+
         this.hideLoadingIcons();
+
       }
     }
     // Make initial query. 
     else {
-      // Run the initial query for users. 
+      // Run the initial query for users.
       let queryUserResult = await this._queryUsers();
 
-      // Append the results of the initial query to a running list of users.
-      usersOutput.push(...this._filterUsers(queryUserResult));
+      if (queryUserResult.hasOwnProperty('value')) {
+        // Append the results of the initial query to a running list of users.
+        usersOutput.push(...this._filterUsers(queryUserResult));
+      }
+      else if (queryUserResult.length > 0) {
+        usersOutput.push(...this._filterUsers({ value: queryUserResult }));
+      }
+      else {
+        // This shouldn't happen.... I hope.
+        alert('Something went wrong.  Please contact helpdesk@clarington.net');
+      }
 
       // Render the list of users that we have queried. 
       this._setUserState(usersOutput);
@@ -196,17 +219,37 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
     });
 
     claringtonUsers = claringtonUsers.filter(value => { return value.mail.includes('clarington.net'); });
+
     return claringtonUsers;
   }
 
-  private async _queryUsers(): Promise<any> {
+  private async _queryUsers(nextLink?: string): Promise<any> {
     let client = await this.props.context.msGraphClientFactory.getClient();
-    return await client.api('users').top(200).select(['displayName', 'surname', 'givenName', 'mail', 'jobTitle', 'businessPhones', 'department', 'mobilePhone', 'userPrincipalName', 'accountEnabled']).get();
+
+    // Check to see if 'nextLink' has been passed into this function.  If it has been passed we can assume that we're query from AD.
+    if (nextLink) {
+      return await client.api(nextLink).get();
+    }
+    else {
+      // Since 'nextLink' has not been provided this means we are running our first search.
+      // Before querying AD, check to see if there are any users in local storage. 
+      let usersFromLocalStorage = this._getUsersFromLocalStorage();
+
+      // If there are any users in local storage return those users BEFORE we query AD.
+      // TODO: Uncomment the if statement below when ready.
+      if (usersFromLocalStorage) {
+        // ! This is what hides the loading icons and displays the list of users.
+        this.setState({ loadingUsers: false });
+        return usersFromLocalStorage;
+      }
+      else {
+        return await client.api('users').top(200).select(['displayName', 'surname', 'givenName', 'mail', 'jobTitle', 'businessPhones', 'department', 'mobilePhone', 'userPrincipalName', 'accountEnabled']).get();
+      }
+    }
   }
 
   private async _queryNextLink(nextLink): Promise<any> {
-    let client = await this.props.context.msGraphClientFactory.getClient();
-    return await client.api(nextLink).get();
+    return await this._queryUsers(nextLink);
   }
 
   private _setUserState(usersOutput, callback?: Function): void {
@@ -230,6 +273,33 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
 
       this._applySearchFilter(this.props.searchString);
     });
+  }
+
+  /**
+   * Get a list of users from local storage. 
+   */
+  private _getUsersFromLocalStorage = () => {
+    // TODO: This method should check and return any users found in local storage.
+    // How it should work. 
+    return this.storage.local.get(this.STORAGE_KEY);
+
+    // But what happens when it doesn't work. 
+    //return this.storage.local.get('badkeythatdoesntexistqwerty');
+  }
+
+  /**
+   * Set users that have been queried from AD.
+   * This method should override any existing values that are being stored in local storage.
+   */
+  private _saveUsersInLocalStorage = (input: any) => {
+    this.storage.local.put(this.STORAGE_KEY, input, new Date(Date.now() + (6.048e+8)));
+  }
+
+  /**
+   * Delete any and all users saved in local storage, query AD for a list of users, save the new result in local storage.
+   */
+  private _clearLocalStorageAndQueryAD = () => {
+    alert('_clearLocalStorageAndQueryAD');
   }
   //#endregion
 

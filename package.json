@@ -15,6 +15,7 @@
     "@microsoft/sp-office-ui-fabric-core": "1.12.1",
     "@microsoft/sp-property-pane": "1.12.1",
     "@microsoft/sp-webpart-base": "1.12.1",
+    "@pnp/core": "^3.3.2",
     "@progress/kendo-licensing": "^1.2.2",
     "@progress/kendo-react-excel-export": "^5.5.0",
     "@types/react": "^16.8.0",
