@@ -13,7 +13,7 @@ import {
 
 import { PnPClientStorage } from "@pnp/core";
 
-
+const STORAGE_KEY = 'StaffDirectoryUsers';
 
 class MyShimmer extends React.Component {
   public render() {
@@ -116,7 +116,6 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
   }
 
   private storage = new PnPClientStorage();
-  private STORAGE_KEY = 'StaffDirectoryUsers';
 
   public componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.searchString !== this.props.searchString) {
@@ -239,7 +238,7 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
       // TODO: Uncomment the if statement below when ready.
       if (usersFromLocalStorage) {
         // ! This is what hides the loading icons and displays the list of users.
-        this.setState({ loadingUsers: false });
+        this.hideLoadingIcons();
         return usersFromLocalStorage;
       }
       else {
@@ -279,12 +278,7 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
    * Get a list of users from local storage. 
    */
   private _getUsersFromLocalStorage = () => {
-    // TODO: This method should check and return any users found in local storage.
-    // How it should work. 
-    return this.storage.local.get(this.STORAGE_KEY);
-
-    // But what happens when it doesn't work. 
-    //return this.storage.local.get('badkeythatdoesntexistqwerty');
+    return this.storage.local.get(STORAGE_KEY);
   }
 
   /**
@@ -292,14 +286,7 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
    * This method should override any existing values that are being stored in local storage.
    */
   private _saveUsersInLocalStorage = (input: any) => {
-    this.storage.local.put(this.STORAGE_KEY, input, new Date(Date.now() + (6.048e+8)));
-  }
-
-  /**
-   * Delete any and all users saved in local storage, query AD for a list of users, save the new result in local storage.
-   */
-  private _clearLocalStorageAndQueryAD = () => {
-    alert('_clearLocalStorageAndQueryAD');
+    this.storage.local.put(STORAGE_KEY, input, new Date(Date.now() + (6.048e+8)));
   }
   //#endregion
 
@@ -510,13 +497,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
               iconProps: { iconName: 'ExcelLogo' },
               onClick: this.excelExport,
               disabled: this.state.disableExcelExport
-            },
-            // {
-            //   key: 'reloadStaffList',
-            //   text: 'Refresh Staff List',
-            //   title: 'Get most up-to-date list of staff members.',
-            //   iconProps: { iconName: 'Refresh' },
-            // },
+            }
           ]}
         />
         <StaffGrid ref={this.childElemnt} {...this.props} searchString={this.state.searchString} loadingFinished={this.loadingFinished} />
@@ -530,7 +511,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
           <ExcelExportColumn field="department" title="Department" />
           <ExcelExportColumn field="jobTitle" title="Position" />
           <ExcelExportColumn field="mail" title="Email" />
-          
+
         </ExcelExport>
       </div>
     );
