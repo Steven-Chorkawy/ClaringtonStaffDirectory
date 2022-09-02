@@ -112,7 +112,7 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
   }
 
   private storage = new PnPClientStorage();
-  private STORAGE_KEY = 'myTestKey';
+  private STORAGE_KEY = 'StaffDirectoryUsers';
 
   public componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.searchString !== this.props.searchString) {
@@ -157,17 +157,14 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
         */
         this.setState({ loadingUsers: false });
 
-        alert('ALL DONE!  NO MORE NEXTLINK!');
         // Whenever the users have been filtered save the filtered result in local storage. 
         this._saveUsersInLocalStorage(usersOutput);
       }
     }
     // Make initial query. 
     else {
-      // Run the initial query for users. 
-      debugger;
+      // Run the initial query for users.
       let queryUserResult = await this._queryUsers();
-      debugger;
 
       if (queryUserResult.hasOwnProperty('value')) {
         // Append the results of the initial query to a running list of users.
