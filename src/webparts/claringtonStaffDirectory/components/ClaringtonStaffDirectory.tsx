@@ -3,9 +3,13 @@ import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/Detai
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
-import { IconButton, SearchBox } from '@fluentui/react';
-
+import { IconButton, SearchBox, CommandButton, TooltipHostBase } from '@fluentui/react';
 import { IClaringtonStaffDirectoryProps, IStaffGridState } from './IClaringtonStaffDirectory';
+import CommandButtons from './CommandButtons';
+import {
+  ExcelExport,
+  ExcelExportColumn,
+} from "@progress/kendo-react-excel-export";
 
 import { PnPClientStorage } from "@pnp/core";
 
@@ -120,6 +124,14 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
     }
   }
 
+  private hideLoadingIcons = () => {
+    this.setState(
+      { loadingUsers: false },
+      () => {
+        this.props.loadingFinished();
+      }
+    );
+  }
   //#region Get Users
   /**
    * When this method is called for the first time BOTH parameters should be null.
@@ -155,10 +167,14 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
          * nextLink was provided as a parameter AND queryNextLinkResult["@odata.nextLink"] is not found AND there are users found in usersOutput.
          * This means that we are done querying our users and it's time to hide the loading icons and show our users.
         */
+
         this.setState({ loadingUsers: false });
 
         // Whenever the users have been filtered save the filtered result in local storage. 
         this._saveUsersInLocalStorage(usersOutput);
+
+        this.hideLoadingIcons();
+
       }
     }
     // Make initial query. 
@@ -254,6 +270,7 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
       if (callback) {
         callback();
       }
+
       this._applySearchFilter(this.props.searchString);
     });
   }
@@ -448,8 +465,33 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
   constructor(props) {
     super(props);
     this.state = {
-      searchString: undefined
+      searchString: undefined,
+      staffList: undefined,
+      disableExcelExport: true
     };
+  }
+
+  public childElemnt = React.createRef<StaffGrid>();
+  public excelExportRef = React.createRef<ExcelExport>();
+
+  public excelExport = () => {
+    if (this.childElemnt.current) {
+      this.setState(
+        { staffList: this.childElemnt.current.state.persona },
+        () => {
+          if (this.excelExportRef.current) {
+            this.excelExportRef.current.save();
+          }
+        }
+      );
+    }
+  }
+
+  /**
+   * Used as a callback method to indicate that all users have been loaded.
+   */
+  public loadingFinished = () => {
+    this.setState({ disableExcelExport: false });
   }
 
   public render(): React.ReactElement<IClaringtonStaffDirectoryProps> {
@@ -459,7 +501,37 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
           placeholder={"Search by Name, Job Title, or Department"}
           onChange={(event: any, newValue: string) => this.setState({ searchString: newValue })}
         />
-        <StaffGrid {...this.props} searchString={this.state.searchString} />
+        <CommandButtons
+          menuItems={[
+            {
+              key: 'excelExport',
+              text: 'Export to Excel',
+              title: 'Download Staff list as excel document.',
+              iconProps: { iconName: 'ExcelLogo' },
+              onClick: this.excelExport,
+              disabled: this.state.disableExcelExport
+            },
+            // {
+            //   key: 'reloadStaffList',
+            //   text: 'Refresh Staff List',
+            //   title: 'Get most up-to-date list of staff members.',
+            //   iconProps: { iconName: 'Refresh' },
+            // },
+          ]}
+        />
+        <StaffGrid ref={this.childElemnt} {...this.props} searchString={this.state.searchString} loadingFinished={this.loadingFinished} />
+
+        <ExcelExport
+          fileName={'Clarington Staff Directory.xlsx'}
+          ref={this.excelExportRef}
+          data={this.state.staffList}
+        >
+          <ExcelExportColumn field="displayName" title="Name" />
+          <ExcelExportColumn field="department" title="Department" />
+          <ExcelExportColumn field="jobTitle" title="Position" />
+          <ExcelExportColumn field="mail" title="Email" />
+          
+        </ExcelExport>
       </div>
     );
   }
