@@ -487,7 +487,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     return (
       <div style={{ maxWidth: '1300px', margin: 'auto' }}>
         <SearchBox
-          placeholder={"Search by Name, Job Title, or Department"}
+          placeholder={"Search by Name, Job Title, Department, or Phone"}
           onChange={(event: any, newValue: string) => this.setState({ searchString: newValue })}
         />
         <CommandButtons
