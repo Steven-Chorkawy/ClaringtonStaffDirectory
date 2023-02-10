@@ -95,7 +95,7 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
         {
           key: 'column5',
           name: 'Phone',
-          fieldName: 'businessPhones',
+          fieldName: 'extNumber',
           minWidth: 50,
           isSorted: false,
           isSortedDescending: false,
@@ -103,7 +103,8 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
           sortDescendingAriaLabel: 'Sorted Z to A',
           onColumnClick: this._onColumnClick,
           onRender: (item: any) => (
-            <div>{item.businessPhones.map(f => { return <div title={f}>{f}</div>; })}</div>
+            // <div>{item.businessPhones.map(f => { return <div title={f}>{f}</div>; })}</div>
+            <div><div title={item.extNumber}>{item.extNumber}</div></div>
           ),
         },
       ],
@@ -173,7 +174,6 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
         this._saveUsersInLocalStorage(usersOutput);
 
         this.hideLoadingIcons();
-
       }
     }
     // Make initial query. 
@@ -258,6 +258,7 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
         imageInitials: `${user.givenName.charAt(0)}${user.surname.charAt(0)}`,
         text: user.displayName,
         secondaryText: user.jobTitle,
+        extNumber: (user.businessPhones.length > 0) ? user.businessPhones[0] : null,
         ...user
       };
     })];
@@ -405,7 +406,8 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
         // start with display name but I should also use jobTitle and department
         return user.displayName.toLowerCase().includes(newValue)
           || user.jobTitle.toLowerCase().includes(newValue)
-          || (user.department && user.department.toLowerCase().includes(newValue));
+          || (user.department && user.department.toLowerCase().includes(newValue))
+          || (user.extNumber && user.extNumber.toLowerCase().includes(newValue));
       });
     }
     else {
@@ -485,7 +487,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
     return (
       <div style={{ maxWidth: '1300px', margin: 'auto' }}>
         <SearchBox
-          placeholder={"Search by Name, Job Title, or Department"}
+          placeholder={"Search by Name, Job Title, Department, or Phone"}
           onChange={(event: any, newValue: string) => this.setState({ searchString: newValue })}
         />
         <CommandButtons
