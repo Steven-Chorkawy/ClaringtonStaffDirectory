@@ -12,6 +12,7 @@ import {
 } from "@progress/kendo-react-excel-export";
 
 import { PnPClientStorage } from "@pnp/core";
+import { filterBy } from '@progress/kendo-data-query';
 
 const STORAGE_KEY = 'StaffDirectoryUsers';
 
@@ -399,23 +400,32 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
   private _applySearchFilter = (newValue: string) => {
     let visibleUsers = this.state.persona;
     if (newValue) {
-      newValue = newValue.toLowerCase();
+      //newValue = newValue.toLowerCase();
       // All users =  this.state.allPersonas;
       // Visible users = this.state.persona;
-      visibleUsers = this.state.allPersonas.filter(user => {
-        // start with display name but I should also use jobTitle and department
-        return user.displayName.toLowerCase().includes(newValue)
-          || user.jobTitle.toLowerCase().includes(newValue)
-          || (user.department && user.department.toLowerCase().includes(newValue))
-          || (user.extNumber && user.extNumber.toLowerCase().includes(newValue));
+      debugger;
+      visibleUsers = filterBy(this.state.allPersonas, {
+        logic: "or",
+        filters: [
+          { field: 'displayName', operator: 'contains', value: newValue },
+          { field: 'jobTitle', operator: 'contains', value: newValue },
+          { field: 'department', operator: 'contains', value: newValue },
+          { field: 'extNumber', operator: 'contains', value: newValue },
+        ]
       });
+      // visibleUsers = this.state.allPersonas.filter(user => {
+      //   // start with display name but I should also use jobTitle and department
+      //   return user.displayName.toLowerCase().includes(newValue)
+      //     || user.jobTitle.toLowerCase().includes(newValue)
+      //     || (user.department && user.department.toLowerCase().includes(newValue))
+      //     || (user.extNumber && user.extNumber.toLowerCase().includes(newValue));
+      // });
     }
     else {
       visibleUsers = this.state.allPersonas;
     }
 
     // ALWAYS sort by department first.  This will ensure that the list of users is first sorted by department, then sorted by other columns. 
-
     visibleUsers = visibleUsers.slice(0).sort((a, b) => ((a['department'] > b['department'] ? 1 : -1)));
 
     // Apply any sorting. 
