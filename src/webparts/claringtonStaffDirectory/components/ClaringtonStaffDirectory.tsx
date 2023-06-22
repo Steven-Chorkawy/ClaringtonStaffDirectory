@@ -498,7 +498,15 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
       <div style={{ maxWidth: '1300px', margin: 'auto' }}>
         <SearchBox
           placeholder={"Search by Name, Job Title, Department, or Phone"}
-          onChange={(event: any, newValue: string) => this.setState({ searchString: newValue })}
+          onChange={(event: any, newValue: string) => {
+            if (!newValue)
+              this.setState({ searchString: newValue });
+          }}
+          onSearch={(newValue: string) => this.setState({ searchString: newValue })}
+          onBlur={(e) => {
+            e && e.target && e.target.value &&
+              this.setState({ searchString: e.target.value });
+          }}
         />
         <CommandButtons
           menuItems={[
@@ -515,7 +523,7 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
         <StaffGrid ref={this.childElemnt} {...this.props} searchString={this.state.searchString} loadingFinished={this.loadingFinished} />
 
         <ExcelExport
-          fileName={'Clarington Staff Directory.xlsx'}
+          fileName={this.state.searchString ? `Clarington Staff Directory - ${this.state.searchString}.xlsx` : 'Clarington Staff Directory.xlsx'}
           ref={this.excelExportRef}
           data={this.state.staffList}
         >
