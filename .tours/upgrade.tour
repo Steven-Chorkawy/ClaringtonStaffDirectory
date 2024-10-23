@@ -1,0 +1,304 @@
+{
+  "title": "Upgrade project Clarington Staff Directory Web Part to v1.20.0",
+  "steps": [
+    {
+      "title": "REQUIRED: @microsoft/sp-core-library (FN001001)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dependency package @microsoft/sp-core-library\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE @microsoft/sp-core-library@1.20.0`](command:codetour.sendTextToTerminal?[\"npm i -SE @microsoft/sp-core-library@1.20.0\"])",
+      "line": 13,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/sp-lodash-subset (FN001002)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dependency package @microsoft/sp-lodash-subset\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE @microsoft/sp-lodash-subset@1.20.0`](command:codetour.sendTextToTerminal?[\"npm i -SE @microsoft/sp-lodash-subset@1.20.0\"])",
+      "line": 14,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/sp-office-ui-fabric-core (FN001003)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dependency package @microsoft/sp-office-ui-fabric-core\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE @microsoft/sp-office-ui-fabric-core@1.20.0`](command:codetour.sendTextToTerminal?[\"npm i -SE @microsoft/sp-office-ui-fabric-core@1.20.0\"])",
+      "line": 15,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/sp-webpart-base (FN001004)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dependency package @microsoft/sp-webpart-base\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE @microsoft/sp-webpart-base@1.20.0`](command:codetour.sendTextToTerminal?[\"npm i -SE @microsoft/sp-webpart-base@1.20.0\"])",
+      "line": 17,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/sp-property-pane (FN001021)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dependency package @microsoft/sp-property-pane\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE @microsoft/sp-property-pane@1.20.0`](command:codetour.sendTextToTerminal?[\"npm i -SE @microsoft/sp-property-pane@1.20.0\"])",
+      "line": 16,
+      "file": "package.json"
+    },
+    {
+      "title": "OPTIONAL: @microsoft/sp-adaptive-card-extension-base (FN001034)",
+      "description": "### OPTIONAL\r\n\r\nInstall SharePoint Framework dependency package @microsoft/sp-adaptive-card-extension-base\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE @microsoft/sp-adaptive-card-extension-base@1.20.0`](command:codetour.sendTextToTerminal?[\"npm i -SE @microsoft/sp-adaptive-card-extension-base@1.20.0\"])",
+      "line": 11,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/sp-build-web (FN002001)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dev dependency package @microsoft/sp-build-web\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE @microsoft/sp-build-web@1.20.2`](command:codetour.sendTextToTerminal?[\"npm i -DE @microsoft/sp-build-web@1.20.2\"])",
+      "line": 29,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/sp-module-interfaces (FN002002)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dev dependency package @microsoft/sp-module-interfaces\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE @microsoft/sp-module-interfaces@1.20.2`](command:codetour.sendTextToTerminal?[\"npm i -DE @microsoft/sp-module-interfaces@1.20.2\"])",
+      "line": 30,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @rushstack/eslint-config (FN002021)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dev dependency package @rushstack/eslint-config\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE @rushstack/eslint-config@4.0.1`](command:codetour.sendTextToTerminal?[\"npm i -DE @rushstack/eslint-config@4.0.1\"])",
+      "line": 27,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: eslint (FN002024)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dev dependency package eslint\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE eslint@8.57.0`](command:codetour.sendTextToTerminal?[\"npm i -DE eslint@8.57.0\"])",
+      "line": 27,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/eslint-plugin-spfx (FN002022)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dev dependency package @microsoft/eslint-plugin-spfx\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE @microsoft/eslint-plugin-spfx@1.20.2`](command:codetour.sendTextToTerminal?[\"npm i -DE @microsoft/eslint-plugin-spfx@1.20.2\"])",
+      "line": 27,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/eslint-config-spfx (FN002023)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dev dependency package @microsoft/eslint-config-spfx\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE @microsoft/eslint-config-spfx@1.20.2`](command:codetour.sendTextToTerminal?[\"npm i -DE @microsoft/eslint-config-spfx@1.20.2\"])",
+      "line": 27,
+      "file": "package.json"
+    },
+    {
+      "title": "RECOMMENDED: .yo-rc.json version (FN010001)",
+      "description": "### RECOMMENDED\r\n\r\nUpdate version in .yo-rc.json\r\n\r\n\r\n```json\r\n{\n  \"@microsoft/generator-sharepoint\": {\n    \"version\": \"1.20.0\"\n  }\n}\r\n```",
+      "line": 5,
+      "file": ".yo-rc.json"
+    },
+    {
+      "title": "RECOMMENDED: .yo-rc.json @microsoft/teams-js SDK version (FN010010)",
+      "description": "### RECOMMENDED\r\n\r\nUpdate @microsoft/teams-js SDK version in .yo-rc.json\r\n\r\n\r\n```json\r\n{\n  \"@microsoft/generator-sharepoint\": {\n    \"sdkVersions\": {\n      \"@microsoft/teams-js\": \"2.24.0\"\n    }\n  }\n}\r\n```",
+      "line": 2,
+      "file": ".yo-rc.json"
+    },
+    {
+      "title": "REQUIRED: Exclude Jest output files in .vscode/settings.json (FN014010)",
+      "description": "### REQUIRED\r\n\r\nAdd excluding Jest output files in .vscode/settings.json\r\n\r\n\r\n```json\r\n{\n  \"files.exclude\": {\n    \"**/jest-output\": true\n  }\n}\r\n```",
+      "line": 4,
+      "file": ".vscode/settings.json"
+    },
+    {
+      "title": "REQUIRED: @fluentui/react (FN001035)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dependency package @fluentui/react\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE @fluentui/react@8.106.4`](command:codetour.sendTextToTerminal?[\"npm i -SE @fluentui/react@8.106.4\"])",
+      "line": 12,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: typescript (FN002026)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dev dependency package typescript\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE typescript@4.7.4`](command:codetour.sendTextToTerminal?[\"npm i -DE typescript@4.7.4\"])",
+      "line": 27,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/rush-stack-compiler-4.7 (FN002028)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dev dependency package @microsoft/rush-stack-compiler-4.7\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE @microsoft/rush-stack-compiler-4.7@0.1.0`](command:codetour.sendTextToTerminal?[\"npm i -DE @microsoft/rush-stack-compiler-4.7@0.1.0\"])",
+      "line": 27,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: tsconfig.json extends property (FN012017)",
+      "description": "### REQUIRED\r\n\r\nUpdate tsconfig.json extends property\r\n\r\n\r\n```json\r\n{\n  \"extends\": \"./node_modules/@microsoft/rush-stack-compiler-4.7/includes/tsconfig-web.json\"\n}\r\n```",
+      "line": 2,
+      "file": "tsconfig.json"
+    },
+    {
+      "title": "REQUIRED: package.json engines.node (FN021003)",
+      "description": "### REQUIRED\r\n\r\nUpdate package.json engines.node property\r\n\r\n\r\n```json\r\n{\n  \"engines\": {\n    \"node\": \">=16.13.0 <17.0.0 || >=18.17.1 <19.0.0\"\n  }\n}\r\n```",
+      "line": 1,
+      "file": "package.json"
+    },
+    {
+      "title": "RECOMMENDED: Hosted workbench type in .vscode/launch.json (FN014008)",
+      "description": "### RECOMMENDED\r\n\r\nIn the .vscode/launch.json file, update the type property for the hosted workbench launch configuration\r\n\r\n\r\n```json\r\n{\n  \"configurations\": [\n    {\n      \"type\": \"msedge\"\n    }\n  ]\n}\r\n```",
+      "line": 28,
+      "file": ".vscode/launch.json"
+    },
+    {
+      "title": "REQUIRED: serve.json initialPage (FN007002)",
+      "description": "### REQUIRED\r\n\r\nUpdate serve.json initialPage URL\r\n\r\n\r\n```json\r\n{\n  \"initialPage\": \"https://{tenantDomain}/_layouts/workbench.aspx\"\n}\r\n```",
+      "line": 5,
+      "file": "config/serve.json"
+    },
+    {
+      "title": "RECOMMENDED: Hosted workbench URL in .vscode/launch.json (FN014009)",
+      "description": "### RECOMMENDED\r\n\r\nIn the .vscode/launch.json file, update the url property for the hosted workbench launch configuration\r\n\r\n\r\n```json\r\n{\n  \"configurations\": [\n    {\n      \"url\": \"https://{tenantDomain}/_layouts/workbench.aspx\"\n    }\n  ]\n}\r\n```",
+      "line": 28,
+      "file": ".vscode/launch.json"
+    },
+    {
+      "title": "REQUIRED: config\\sass.json (FN015009)",
+      "description": "### REQUIRED\r\n\r\nAdd file config\\sass.json\r\n\r\nExecute the following command:\r\n\r\n[`cat > \"config\\sass.json\" << EOF \n{\n  \"$schema\": \"https://developer.microsoft.com/json-schemas/core-build/sass.schema.json\"\n}\nEOF`](command:codetour.sendTextToTerminal?[\"cat > \"config\\sass.json\" << EOF \n{\n  \"$schema\": \"https://developer.microsoft.com/json-schemas/core-build/sass.schema.json\"\n}\nEOF\"])",
+      "line": 1,
+      "directory": ""
+    },
+    {
+      "title": "REQUIRED: react (FN001008)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dependency package react\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE react@17.0.1`](command:codetour.sendTextToTerminal?[\"npm i -SE react@17.0.1\"])",
+      "line": 24,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: react-dom (FN001009)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dependency package react-dom\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE react-dom@17.0.1`](command:codetour.sendTextToTerminal?[\"npm i -SE react-dom@17.0.1\"])",
+      "line": 25,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: office-ui-fabric-react (FN001022)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dependency package office-ui-fabric-react\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE office-ui-fabric-react@7.199.1`](command:codetour.sendTextToTerminal?[\"npm i -SE office-ui-fabric-react@7.199.1\"])",
+      "line": 11,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @types/react (FN002015)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dev dependency package @types/react\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE @types/react@17.0.45`](command:codetour.sendTextToTerminal?[\"npm i -DE @types/react@17.0.45\"])",
+      "line": 27,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @types/react-dom (FN002016)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dev dependency package @types/react-dom\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE @types/react-dom@17.0.17`](command:codetour.sendTextToTerminal?[\"npm i -DE @types/react-dom@17.0.17\"])",
+      "line": 27,
+      "file": "package.json"
+    },
+    {
+      "title": "RECOMMENDED: .yo-rc.json nodeVersion (FN010008)",
+      "description": "### RECOMMENDED\r\n\r\nUpdate nodeVersion in .yo-rc.json\r\n\r\n\r\n```json\r\n{\n  \"@microsoft/generator-sharepoint\": {\n    \"nodeVersion\": \"18.18.2\"\n  }\n}\r\n```",
+      "line": 2,
+      "file": ".yo-rc.json"
+    },
+    {
+      "title": "RECOMMENDED: .yo-rc.json @microsoft/microsoft-graph-client SDK version (FN010009)",
+      "description": "### RECOMMENDED\r\n\r\nUpdate @microsoft/microsoft-graph-client SDK version in .yo-rc.json\r\n\r\n\r\n```json\r\n{\n  \"@microsoft/generator-sharepoint\": {\n    \"sdkVersions\": {\n      \"@microsoft/microsoft-graph-client\": \"3.0.2\"\n    }\n  }\n}\r\n```",
+      "line": 2,
+      "file": ".yo-rc.json"
+    },
+    {
+      "title": "REQUIRED: tsconfig.json noImplicitAny (FN012020)",
+      "description": "### REQUIRED\r\n\r\nAdd noImplicitAny in tsconfig.json\r\n\r\n\r\n```json\r\n{\n  \"compilerOptions\": {\n    \"noImplicitAny\": true\n  }\n}\r\n```",
+      "line": 3,
+      "file": "tsconfig.json"
+    },
+    {
+      "title": "REQUIRED: serve.json schema (FN007001)",
+      "description": "### REQUIRED\r\n\r\nUpdate serve.json schema URL\r\n\r\n\r\n```json\r\n{\n  \"$schema\": \"https://developer.microsoft.com/json-schemas/spfx-build/spfx-serve.schema.json\"\n}\r\n```",
+      "line": 2,
+      "file": "config/serve.json"
+    },
+    {
+      "title": "REQUIRED: tslib (FN001033)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dependency package tslib\r\n\r\nExecute the following command:\r\n\r\n[`npm i -SE tslib@2.3.1`](command:codetour.sendTextToTerminal?[\"npm i -SE tslib@2.3.1\"])",
+      "line": 11,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: ajv (FN002007)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dev dependency package ajv\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE ajv@6.12.5`](command:codetour.sendTextToTerminal?[\"npm i -DE ajv@6.12.5\"])",
+      "line": 34,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/sp-tslint-rules (FN002009)",
+      "description": "### REQUIRED\r\n\r\nRemove SharePoint Framework dev dependency package @microsoft/sp-tslint-rules\r\n\r\nExecute the following command:\r\n\r\n[`npm un -D @microsoft/sp-tslint-rules`](command:codetour.sendTextToTerminal?[\"npm un -D @microsoft/sp-tslint-rules\"])",
+      "line": 31,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: @types/webpack-env (FN002013)",
+      "description": "### REQUIRED\r\n\r\nUpgrade SharePoint Framework dev dependency package @types/webpack-env\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE @types/webpack-env@1.15.2`](command:codetour.sendTextToTerminal?[\"npm i -DE @types/webpack-env@1.15.2\"])",
+      "line": 33,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: eslint-plugin-react-hooks (FN002025)",
+      "description": "### REQUIRED\r\n\r\nInstall SharePoint Framework dev dependency package eslint-plugin-react-hooks\r\n\r\nExecute the following command:\r\n\r\n[`npm i -DE eslint-plugin-react-hooks@4.3.0`](command:codetour.sendTextToTerminal?[\"npm i -DE eslint-plugin-react-hooks@4.3.0\"])",
+      "line": 27,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: tslint.json (FN015003)",
+      "description": "### REQUIRED\r\n\r\nRemove file tslint.json\r\n\r\nExecute the following command:\r\n\r\n[`rm \"tslint.json\"`](command:codetour.sendTextToTerminal?[\"rm \"tslint.json\"\"])",
+      "line": 1,
+      "file": "tslint.json"
+    },
+    {
+      "title": "REQUIRED: .eslintrc.js (FN015008)",
+      "description": "### REQUIRED\r\n\r\nAdd file .eslintrc.js\r\n\r\nExecute the following command:\r\n\r\n[`cat > \".eslintrc.js\" << EOF \nrequire('@rushstack/eslint-config/patch/modern-module-resolution');\nexport default {\n  extends: ['@microsoft/eslint-config-spfx/lib/profiles/react'],\n  parserOptions: { tsconfigRootDir: __dirname }\n};\nEOF`](command:codetour.sendTextToTerminal?[\"cat > \".eslintrc.js\" << EOF \nrequire('@rushstack/eslint-config/patch/modern-module-resolution');\nexport default {\n  extends: ['@microsoft/eslint-config-spfx/lib/profiles/react'],\n  parserOptions: { tsconfigRootDir: __dirname }\n};\nEOF\"])",
+      "line": 1,
+      "directory": ""
+    },
+    {
+      "title": "REQUIRED: .gitignore '.heft' folder (FN023002)",
+      "description": "### REQUIRED\r\n\r\nTo .gitignore add the '.heft' folder\r\n\r\n",
+      "line": 1,
+      "file": ".gitignore"
+    },
+    {
+      "title": "REQUIRED: package-solution.json metadata (FN006005)",
+      "description": "### REQUIRED\r\n\r\nIn package-solution.json add metadata section\r\n\r\n\r\n```json\r\n{\n  \"solution\": {\n    \"metadata\": {\n      \"shortDescription\": {\n        \"default\": \"staff-directory description\"\n      },\n      \"longDescription\": {\n        \"default\": \"staff-directory description\"\n      },\n      \"screenshotPaths\": [],\n      \"videoUrl\": \"\",\n      \"categories\": []\n    }\n  }\n}\r\n```",
+      "line": 3,
+      "file": "config/package-solution.json"
+    },
+    {
+      "title": "REQUIRED: package-solution.json features (FN006006)",
+      "description": "### REQUIRED\r\n\r\nIn package-solution.json add features for components\r\n\r\n\r\n```json\r\n{\n  \"solution\": {\n    \"features\": [\n      {\n        \"title\": \"staff-directory ClaringtonStaffDirectoryWebPart Feature\",\n        \"description\": \"The feature that activates ClaringtonStaffDirectoryWebPart from the staff-directory solution.\",\n        \"id\": \"dfabb370-e360-4659-8eb9-c32da25f59ae\",\n        \"version\": \"5.5.0.6\",\n        \"componentIds\": [\n          \"dfabb370-e360-4659-8eb9-c32da25f59ae\"\n        ]\n      }\n    ]\n  }\n}\r\n```",
+      "line": 3,
+      "file": "config/package-solution.json"
+    },
+    {
+      "title": "REQUIRED: @microsoft/sp-webpart-workbench (FN002003)",
+      "description": "### REQUIRED\r\n\r\nRemove SharePoint Framework dev dependency package @microsoft/sp-webpart-workbench\r\n\r\nExecute the following command:\r\n\r\n[`npm un -D @microsoft/sp-webpart-workbench`](command:codetour.sendTextToTerminal?[\"npm un -D @microsoft/sp-webpart-workbench\"])",
+      "line": 32,
+      "file": "package.json"
+    },
+    {
+      "title": "REQUIRED: serve.json api (FN007003)",
+      "description": "### REQUIRED\r\n\r\nFrom serve.json remove the api property\r\n\r\n\r\n```json\r\n\r\n```",
+      "line": 6,
+      "file": "config/serve.json"
+    },
+    {
+      "title": "RECOMMENDED: Local workbench in .vscode/launch.json (FN014007)",
+      "description": "### RECOMMENDED\r\n\r\nIn the .vscode/launch.json file, remove the local workbench launch configuration\r\n\r\n\r\n```json\r\n\r\n```",
+      "line": 11,
+      "file": ".vscode/launch.json"
+    },
+    {
+      "title": "REQUIRED: config\\copy-assets.json (FN015007)",
+      "description": "### REQUIRED\r\n\r\nRemove file config\\copy-assets.json\r\n\r\nExecute the following command:\r\n\r\n[`rm \"config\\copy-assets.json\"`](command:codetour.sendTextToTerminal?[\"rm \"config\\copy-assets.json\"\"])",
+      "line": 1,
+      "file": "config/copy-assets.json"
+    },
+    {
+      "title": "REQUIRED: Create .npmignore (FN024001)",
+      "description": "### REQUIRED\r\n\r\nCreate the .npmignore file\r\n\r\n",
+      "line": 1,
+      "directory": ""
+    },
+    {
+      "title": "OPTIONAL: Run npm dedupe (FN017001)",
+      "description": "### OPTIONAL\r\n\r\nIf, after upgrading npm packages, when building the project you have errors similar to: \"error TS2345: Argument of type 'SPHttpClientConfiguration' is not assignable to parameter of type 'SPHttpClientConfiguration'\", try running 'npm dedupe' to cleanup npm packages.\r\n\r\nExecute the following command:\r\n\r\n[`npm dedupe`](command:codetour.sendTextToTerminal?[\"npm dedupe\"])",
+      "line": 1,
+      "file": "package.json"
+    },
+    {
+      "file": ".tours/upgrade.tour",
+      "title": "RECOMMENDED: Delete tour",
+      "description": "### THAT'S IT!!!\r\nOnce you have tested that your upgrade is successful, you can delete the `.tour` folder and its contents. Otherwise, you'll be prompted to launch this CodeTour every time you open this project."
+    }
+  ]
+}
