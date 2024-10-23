@@ -39,7 +39,7 @@ class MyShimmer extends React.Component {
 }
 
 class StaffGrid extends React.Component<any, IStaffGridState> {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {
       loadingUsers: true, // Set this to true by default.  It will be set to false if/when the AD query is complete.
@@ -400,10 +400,6 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
   private _applySearchFilter = (newValue: string) => {
     let visibleUsers = this.state.persona;
     if (newValue) {
-      //newValue = newValue.toLowerCase();
-      // All users =  this.state.allPersonas;
-      // Visible users = this.state.persona;
-      debugger;
       visibleUsers = filterBy(this.state.allPersonas, {
         logic: "or",
         filters: [
@@ -413,13 +409,6 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
           { field: 'extNumber', operator: 'contains', value: newValue },
         ]
       });
-      // visibleUsers = this.state.allPersonas.filter(user => {
-      //   // start with display name but I should also use jobTitle and department
-      //   return user.displayName.toLowerCase().includes(newValue)
-      //     || user.jobTitle.toLowerCase().includes(newValue)
-      //     || (user.department && user.department.toLowerCase().includes(newValue))
-      //     || (user.extNumber && user.extNumber.toLowerCase().includes(newValue));
-      // });
     }
     else {
       visibleUsers = this.state.allPersonas;
@@ -527,11 +516,11 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
           ref={this.excelExportRef}
           data={this.state.staffList}
         >
-          <ExcelExportColumn field="displayName" title="Name" />
+          <ExcelExportColumn field="surname" title="Last Name" />
+          <ExcelExportColumn field="givenName" title="First Name" />
           <ExcelExportColumn field="department" title="Department" />
           <ExcelExportColumn field="jobTitle" title="Position" />
           <ExcelExportColumn field="mail" title="Email" />
-
         </ExcelExport>
       </div>
     );
