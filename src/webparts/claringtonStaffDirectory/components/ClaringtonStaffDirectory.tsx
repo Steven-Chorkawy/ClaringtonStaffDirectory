@@ -4,7 +4,7 @@ import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
 import { LivePersona } from "@pnp/spfx-controls-react/lib/LivePersona";
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
-import { IconButton, SearchBox, CommandButton, TooltipHostBase } from '@fluentui/react';
+import { IconButton, SearchBox, CommandButton, TooltipHostBase, Stack, DefaultButton } from '@fluentui/react';
 import { IClaringtonStaffDirectoryProps, IStaffGridState } from './IClaringtonStaffDirectory';
 import CommandButtons from './CommandButtons';
 import {
@@ -14,6 +14,7 @@ import {
 
 import { PnPClientStorage } from "@pnp/core";
 import { filterBy } from '@progress/kendo-data-query';
+import PackageSolutionVersion from './PackageSolutionVersion';
 
 const STORAGE_KEY = 'StaffDirectoryUsers';
 
@@ -504,19 +505,11 @@ export default class ClaringtonStaffDirectory extends React.Component<IClaringto
               this.setState({ searchString: e.target.value });
           }}
         />
-        <CommandButtons
-          menuItems={[
-            {
-              key: 'excelExport',
-              text: 'Export to Excel',
-              title: 'Download Staff list as excel document.',
-              iconProps: { iconName: 'ExcelLogo' },
-              onClick: this.excelExport,
-              disabled: this.state.disableExcelExport
-            }
-          ]}
-        />
+        <Stack horizontal tokens={{ childrenGap: 40 }} style={{ marginTop: '5px' }}>
+          <DefaultButton text="Export to Excel" title='Download Staff list as excel document.' onClick={this.excelExport} disabled={this.state.disableExcelExport} iconProps={{ iconName: 'ExcelLogo' }} />
+        </Stack>
         <StaffGrid ref={this.childElemnt} {...this.props} searchString={this.state.searchString} loadingFinished={this.loadingFinished} />
+        <PackageSolutionVersion />
 
         <ExcelExport
           fileName={this.state.searchString ? `Clarington Staff Directory - ${this.state.searchString}.xlsx` : 'Clarington Staff Directory.xlsx'}
