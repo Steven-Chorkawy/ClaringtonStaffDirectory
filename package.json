@@ -20,6 +20,7 @@
     "@microsoft/sp-property-pane": "1.20.0",
     "@microsoft/sp-webpart-base": "1.20.0",
     "@pnp/core": "^3.3.2",
+    "@pnp/spfx-controls-react": "3.19.0",
     "@progress/kendo-data-query": "^1.6.0",
     "@progress/kendo-licensing": "^1.2.2",
     "@progress/kendo-react-excel-export": "^5.5.0",

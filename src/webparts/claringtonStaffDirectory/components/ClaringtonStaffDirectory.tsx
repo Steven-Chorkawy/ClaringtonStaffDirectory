@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { IColumn } from 'office-ui-fabric-react/lib/components/DetailsList/DetailsList.types';
 import { Persona, PersonaSize } from '@fluentui/react/lib/Persona';
+import { LivePersona } from "@pnp/spfx-controls-react/lib/LivePersona";
 import { DetailsList, SelectionMode } from 'office-ui-fabric-react/lib/components/DetailsList';
 import { Shimmer } from 'office-ui-fabric-react';
 import { IconButton, SearchBox, CommandButton, TooltipHostBase } from '@fluentui/react';
@@ -56,9 +57,15 @@ class StaffGrid extends React.Component<any, IStaffGridState> {
           sortDescendingAriaLabel: 'Sorted Z to A',
           onColumnClick: this._onColumnClick,
           onRender: (item: any) => (
-            <Persona
-              {...item}
-              size={PersonaSize.size40}
+            <LivePersona
+              upn={item.userPrincipalName}
+              disableHover={false}
+              template={
+                <>
+                  <Persona {...item} coinSize={48} />
+                </>
+              }
+              serviceScope={this.props.context.serviceScope}
             />
           ),
         },
