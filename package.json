@@ -24,6 +24,7 @@
     "@progress/kendo-data-query": "^1.6.0",
     "@progress/kendo-licensing": "^1.2.2",
     "@progress/kendo-react-excel-export": "^5.5.0",
+    "jsonpath-plus": "^10.3.0",
     "office-ui-fabric-react": "7.199.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
